@@ -4,11 +4,14 @@
 <!DOCTYPE >
 <html>
 <head>
-
+<link type="text/css" href="css/main.css" rel="stylesheet">
 </head>
 <body>
 
 <form action="Search">
+  <button class="img_button" type="submit" value="search" style="border: 0; background: transparent">
+    <img src="/Sportal/img/magnifier.png" width="20" height="20" alt="submit" />
+</button>
   <input type="text" name="search" placeholder="Search...">
   <select name="category">
 			<c:forEach items="${applicationScope.categories}" var="category">
@@ -23,7 +26,9 @@
 	    	</c:forEach>
 		</select>
   </c:if>
-  <input type="submit" value="search">
+  <!--  <input type="submit" value="search"> EX SEARCH BUTTON -->
+
+  
 </form>
 
 </body>

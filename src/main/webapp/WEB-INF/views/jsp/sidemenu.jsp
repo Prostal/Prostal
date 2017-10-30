@@ -3,11 +3,15 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-
+<head>
+<link type="text/css" href="css/main.css" rel="stylesheet">
+</head>
 <body>
+
 	<c:forEach items="${applicationScope.categories}" var="category">	
-		<a href="categoryArticles?category=${ category.categoryId}"><button>${category.name}</button></a>
+		<a href="categoryArticles?category=${ category.categoryId}"><button class="side_button">${category.name}</button></a>
  		<br>
 	 </c:forEach>
+	 
 </body>
 </html>
