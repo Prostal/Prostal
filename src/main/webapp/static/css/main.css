@@ -5,7 +5,7 @@ body {
 }
 
 .button_most {
-   	background-color: black;
+	background-color: black;
 	color: white;
 	font: 20px verdana, sans-serif;
 	width: 33%;
@@ -16,50 +16,50 @@ body {
 .button_most:hover {
 	transform: translate(0px, 10px);
 	background-color: #fe850c;
-	cursor:pointer;
+	cursor: pointer;
 }
 
-#login_button {
+#login_button, #logout_button {
+	position: absolute;
+	right: 0px;
 	background-color: black;
 	color: white;
 }
 
-#logout_button {
-	background-color: black;
-	color: white;
+#login_button:hover, #logout_button:hover {
+	background-color: #fe850c;
+	cursor: pointer;
 }
 
 .side_button {
-	
-    color: #fe850c;
-    color: rgb(254, 133, 12);
-    background-color: #333333;
-    background-color: rgb(51, 51, 51);
-    font-size: 20px;
-    line-height: 25px;
-    vertical-align: baseline;
-    letter-spacing: normal;
-    word-spacing: 0px;
-    font-weight: 400;
-    font-style: normal;
-    font-variant: normal;
-    text-transform: none;
-    text-decoration: none;
-    text-align: left;
-    text-indent: 0px;
-    border-radius: 5px;
-    width: 20%;
-
+	color: #fe850c;
+	color: rgb(254, 133, 12);
+	background-color: #333333;
+	background-color: rgb(51, 51, 51);
+	font-size: 20px;
+	line-height: 25px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: 0px;
+	font-weight: 400;
+	font-style: normal;
+	font-variant: normal;
+	text-transform: none;
+	text-decoration: none;
+	text-align: left;
+	text-indent: 0px;
+	border-radius: 5px;
+	width: 20%;
 }
 
 .side_button:hover {
 	transform: translate(10px, 0px);
 	background-color: white;
-	cursor:pointer;
+	cursor: pointer;
 }
 
-.img_button:hover{
-		cursor:pointer;
+.img_button:hover {
+	cursor: pointer;
 }
 
 .side_button:active {
@@ -73,9 +73,33 @@ body {
 }
 
 #header_body {
-	position: relative;
+	width: 100%;
+	clear: both;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 50000;
+	background: #000;
+	display: block;
+	box-shadow: 0 1px 5px #000;
+	-moz-box-shadow: 0 1px 5px #000;
+	-webkit-box-shadow: 0 1px 5px #000;
+}
+
+#body {
+	margin-top: 30px;
+	height: 3000px;
+	overflow: auto;
 }
 
 #article {
 	font-size: 20px;
+}
+
+a:link, a:visited {
+	color: #fe850c;
+}
+
+a:hover{
+	color: white;
 }

@@ -42,7 +42,6 @@
 		</c:if>
 
 
-
 		<!--  <a href="userPage?=${sessionScope.user.username }>${sessionScope.user.username }</a> -->
 
 		<!--  <a href = "userPage"> ------------------- </a> -->
@@ -59,8 +58,6 @@
 			 -->
 
 	</div>
-
-
 
 	<jsp:include page="search.jsp"></jsp:include>
 </body>
