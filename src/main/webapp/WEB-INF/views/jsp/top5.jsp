@@ -25,6 +25,6 @@
 			<hr>
 		</c:forEach>
 		
-
+	<jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

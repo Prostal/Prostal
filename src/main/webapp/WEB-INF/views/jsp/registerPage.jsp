@@ -25,5 +25,7 @@
 			<input type="submit" value="Register"><br>
 		</form> 
 		Already have an account?<a href = "loginPage">Please login here</a>
+		
+		<jsp:include page="footer.jsp"></jsp:include>
 	</body>
 </html>

@@ -22,5 +22,7 @@
 		
 		Don`t have an account yet? Please <a href="registerPage">register</a>.
 		<a href="index">Home</a>
+		
+		<jsp:include page="footer.jsp"></jsp:include>
 	</body>
 </html>

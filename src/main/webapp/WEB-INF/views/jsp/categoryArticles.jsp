@@ -26,5 +26,7 @@
 	 <hr>
 	<jsp:include page="sidemenu.jsp"></jsp:include>
 
+<jsp:include page="footer.jsp"></jsp:include>
+
 </body>
 </html>
