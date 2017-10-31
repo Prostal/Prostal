@@ -7,7 +7,8 @@
 <link type="text/css" href="css/main.css" rel="stylesheet">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
-<body id="header_body">
+<body >
+<div id="header_body">
 	<a href="index"><img src="/Sportal/img/logo.png" alt=""></a>
 	<div id="top_user_options">
 		<!--  <form action="index">
@@ -60,5 +61,8 @@
 	</div>
 
 	<jsp:include page="search.jsp"></jsp:include>
+	</div> <!-- header body div end... DO NOT TOUCH! -->
+	
+	
 </body>
 </html>

@@ -74,13 +74,10 @@ body {
 
 #header_body {
 	width: 100%;
-	clear: both;
 	position: fixed;
 	top: 0;
 	left: 0;
 	z-index: 50000;
-	background: #000;
-	display: block;
 	box-shadow: 0 1px 5px #000;
 	-moz-box-shadow: 0 1px 5px #000;
 	-webkit-box-shadow: 0 1px 5px #000;
