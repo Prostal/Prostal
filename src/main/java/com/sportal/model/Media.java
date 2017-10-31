@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 public class Media implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	public static final String IMAGE_URL = "C:\\uploads\\";
+	//public static final String IMAGE_URL = "C:\\uploads\\";
 	private long media_id;
 	@NotNull
 	@Size(min=2, max=45)
@@ -16,17 +16,19 @@ public class Media implements Serializable {
 	@NotNull
 	@Size(min=2, max=1024)
 	private String url;//1024
+	private boolean isVideo;
 	
-	public Media(long media_id, String name, String url) {
-		this(name,url);
+	public Media(long media_id, String name, String url, boolean isVideo) {
+		this(name,url, isVideo);
 		this.media_id = media_id;
 	}
 	
 	
 
-	public Media(String name, String url) {
+	public Media(String name, String url, boolean isVideo) {
 		this.name = name;
 		this.url = url;
+		this.isVideo= isVideo;
 	}
 
 
@@ -39,13 +41,13 @@ public class Media implements Serializable {
 		return media_id;
 	}
 
-
-
 	public String getName() {
 		return name;
 	}
 
-
+	public boolean getIsVideo() {
+		return isVideo;
+	}
 
 	public String getUrl() {
 		return url;

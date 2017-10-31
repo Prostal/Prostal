@@ -1,6 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@page language="java" trimDirectiveWhitespaces="true"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +15,7 @@
 		<input type="text" name ="category" placeholder = "category name">
 		<input type="submit" value="post category"><br>
 	</form>
-	
+	<br>
 	
 	<form action="postArticle" method="post" enctype="multipart/form-data">
 	

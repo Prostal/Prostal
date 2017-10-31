@@ -26,16 +26,18 @@ public class CommentService {
 
 	@RequestMapping(value="/comment", method=RequestMethod.POST)
 	@ResponseBody
-	public void saveComment(HttpServletRequest req, HttpServletResponse resp){
+	public void Comment(HttpServletRequest req, HttpServletResponse resp){
  		//check if user is logged in
 		//collect data from request
 		User user = (User) req.getSession().getAttribute("user");
 		long userId = user.getId();
+		System.out.println(user.getUsername());
 		Article article = (Article) req.getSession().getAttribute("article");
 		long articleId = article.getId();
+		System.out.println(article.getTitle());
 		//req.setCharacterEncoding("UTF-8");
-		String content = req.getParameter("comment");
-		System.out.println(content);
+		String content = req.getParameter("content");
+		System.out.println("Content"+content);
 		//String result = URLDecoder.decode(content, "UTF-8");
 		
 		Comment comment = new Comment(userId, articleId, content, 0, 0, LocalDateTime.now(), true, new HashSet<>());
@@ -44,8 +46,9 @@ public class CommentService {
 			//insert new comment related to the article where the user is (URL??)
 			commentDao.addComment(comment);
 		} catch (SQLException e) {
-			System.out.println("op");
+			System.out.println("op"+e.getMessage());
 		}
+		System.out.println("service completed");
 		//refresh article comments and forward to the article URL
 		resp.setStatus(200);
 	}

@@ -57,6 +57,7 @@ public class UserController {
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 			return "error";
 		}
+		
 
 	}
 
@@ -104,12 +105,14 @@ public class UserController {
 		// get user from session
 		User user = (User) request.getSession().getAttribute("user");
 		// update user
+		
 		try {
 
-			if (user.getUsername() != null) {
+			if (user!=null) {
 				String username = user.getUsername();
 				user = userDao.getUser(username);
 				request.getSession().setAttribute("user", user);
+				return "user";
 			}
 
 		} catch (SQLException e) {
@@ -118,11 +121,11 @@ public class UserController {
 			return "error";
 		}
 		
-		return "user";
+		return "index";
 	}
 
 	@RequestMapping(value = "/avatarUpload", method = RequestMethod.POST)
-	public String avatarUpload(@RequestParam("avatar") MultipartFile file, HttpServletRequest req){
+	public String avatarUpload(@RequestParam("avatar") MultipartFile file, HttpServletRequest req, HttpServletResponse resp){
 
 		User user = (User) req.getSession().getAttribute("user");
 		if(user==null){
@@ -150,7 +153,7 @@ public class UserController {
 			return "error";
 		}
 
-		return "user";
+		return "index";
 	}
 
 	@RequestMapping(value = "/getAvatar", method = RequestMethod.GET)
