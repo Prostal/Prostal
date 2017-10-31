@@ -1,7 +1,11 @@
+
+
 body {
 	background-color: black;
 	color: white;
 	font: 10px verdana, sans-serif;
+	margin-top: 90px;
+					 
 }
 
 .button_most {
@@ -73,27 +77,23 @@ body {
 }
 
 #header_body {
+	background-color: black;
 	width: 100%;
 	position: fixed;
-	top: 0;
+	top: 0px;
 	left: 0;
-	z-index: 50000;
-	box-shadow: 0 1px 5px #000;
-	-moz-box-shadow: 0 1px 5px #000;
-	-webkit-box-shadow: 0 1px 5px #000;
+	box-shadow: 0px -5px 10px 5px #fe850c;
 }
 
-#body {
-	margin-top: 30px;
-	height: 3000px;
-	overflow: auto;
-}
+
 
 #article {
 	font-size: 20px;
 }
 
+
 a:link, a:visited {
+	text-decoration:none;
 	color: #fe850c;
 }
 

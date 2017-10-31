@@ -28,21 +28,17 @@
 		</a>
 		</div>
 
-		
 		<c:if test="${ sessionScope.user==null }">
 			<form action="loginPage">
 				<input type="submit" value="log in" id="login_button">
 			</form>
 		</c:if>
 		
-
 		<c:if test="${ sessionScope.user!=null }">
 			<form action="Logout" method="post">
 				<input type="submit" value="log out" id="logout_button">
 			</form>
 		</c:if>
-
-
 		<!--  <a href="userPage?=${sessionScope.user.username }>${sessionScope.user.username }</a> -->
 
 		<!--  <a href = "userPage"> ------------------- </a> -->
@@ -57,12 +53,11 @@
 					alt="Log out" />
 			</button> ATTEMPT TO MAKE A LOGOUT BUTTON
 			 -->
-
 	</div>
 
 	<jsp:include page="search.jsp"></jsp:include>
+	<br>
 	</div> <!-- header body div end... DO NOT TOUCH! -->
-	
 	
 </body>
 </html>
