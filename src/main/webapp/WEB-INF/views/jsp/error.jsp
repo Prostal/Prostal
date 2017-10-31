@@ -7,8 +7,16 @@
 
 body {
 	background-color: black;
-	font-color: white;
-	font-size: 20px;
+	color: white;
+	font-size: 30px;
+	font-style: italic;
+	font-family: arial;
+	margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
 }
 
 </style>
@@ -18,7 +26,7 @@ body {
 <body>
 
 	<img src="/Sportal/img/404.png" alt="Error 404">
-	<h4>But we still got plenty alive here:
+	<h4>Please find our condolences here:
 	<a href="index"><img src="/Sportal/img/logo.png" alt=""></a>
 	</h4>
 	

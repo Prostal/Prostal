@@ -7,11 +7,14 @@
 <link type="text/css" href="css/main.css" rel="stylesheet">
 </head>
 <body>
-
+	
+	<div id="side_menu">
+	
 	<c:forEach items="${applicationScope.categories}" var="category">	
 		<a href="categoryArticles?category=${ category.categoryId}"><button class="side_button">${category.name}</button></a>
  		<br>
 	 </c:forEach>
+	</div>
 	 
 </body>
 </html>

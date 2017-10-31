@@ -12,7 +12,7 @@
 	<jsp:include page="header.jsp"></jsp:include>
 	<hr>
 	<c:forEach items="${sessionScope.articles}" var="article">
-				<h1><a href="pickArticle?articleId=${article.id}" >"${article.title }"</a></h1>
+				<h1><a href="pickArticle?articleId=${article.id}" > ${article.title } </a></h1>
 				<!--<c:out value="${article.title }"></c:out>  <br> -->
 				<c:out value="${article.textContent }"></c:out> <br>
 				<c:out value="${article.impressions }"></c:out> <br>

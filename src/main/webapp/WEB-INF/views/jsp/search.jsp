@@ -26,7 +26,7 @@
 	    	</c:forEach>
 		</select>
   </c:if>
-  <!--  <input type="submit" value="search"> EX SEARCH BUTTON -->
+ 
 
   
 </form>
