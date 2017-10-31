@@ -32,7 +32,7 @@ public class MediaController {
 		try {
 			media = mediaDao.getMediaById(mediaId);
 		} catch (SQLException e1) {
-			System.out.println("op");
+			System.out.println("op "+e1.getMessage());
 		}
 		String mediaUrl = media.getUrl();
 		File myFile = new File(mediaUrl);
@@ -41,14 +41,16 @@ public class MediaController {
 			Files.copy(path, response.getOutputStream());
 		} 
 		catch (IOException e) {
-			System.out.println("op");
+			e.getStackTrace();
+			System.out.println("op "+e.getMessage());
 		}
 		finally{
 			 try {
 				response.getOutputStream().flush();
 				response.getOutputStream().close();
 			} catch (IOException e) {
-				System.out.println("op");
+				e.getStackTrace();
+				System.out.println("op "+e.getMessage());
 			}
 		}
 	}

@@ -19,9 +19,10 @@ public  class MediaDao extends Dao{
 	
 	public long addMedia(Media media) throws SQLException{
 		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("INSERT INTO media (name, content_url) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+		PreparedStatement ps = con.prepareStatement("INSERT INTO media (name, content_url, isVideo) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 		ps.setString(1, media.getName());
 		ps.setString(2, media.getUrl());
+		ps.setBoolean(3, media.getIsVideo());
 		ps.executeUpdate();
 		ResultSet rs = ps.getGeneratedKeys();
 		rs.next();
@@ -57,37 +58,38 @@ public  class MediaDao extends Dao{
 	
 	public synchronized Media getMediaByName(String name) throws SQLException{
 		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT media_id, name, content_url FROM media m WHERE m.name = ?");
+		PreparedStatement ps = con.prepareStatement("SELECT media_id, name, content_url, isVideo FROM media m WHERE m.name = ?");
 		ps.setString(1, name);
 		ResultSet rs = ps.executeQuery();
 		if(!rs.next()){
 			return null;
 		}
-		return new Media(rs.getLong("media_id"), name, rs.getString("content_url"));
+		return new Media(rs.getLong("media_id"), name, rs.getString("content_url"), rs.getBoolean("isVideo"));
 	}
 	
 	public  Media getMediaById(long mediaId) throws SQLException{
 		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT m.name, m.content_url FROM media m WHERE m.media_id = ?");
+		PreparedStatement ps = con.prepareStatement("SELECT m.name, m.content_url, isVideo FROM media m WHERE m.media_id = ?");
 		ps.setLong(1, mediaId);
 		ResultSet rs = ps.executeQuery();
 		if(!rs.next()){
 			return null;
 		}
-		return new Media(mediaId, rs.getString(1), rs.getString(2));
+		return new Media(mediaId, rs.getString(1), rs.getString(2),rs.getBoolean(3));
 	}
 	
 	public  Set<Media> getMediaByArticle(long id) throws SQLException{
 		Set<Media> mediaFiles = new HashSet<Media>();
 		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT m.media_id, m.name, m.content_url, am.article_id FROM media as m JOIN article_media as am WHERE m.media_id = am.media_id and am.article_id = ?");
+		PreparedStatement ps = con.prepareStatement("SELECT m.media_id, m.name, m.content_url, m.isVideo, am.article_id FROM media as m JOIN article_media as am WHERE m.media_id = am.media_id and am.article_id = ?");
 		ps.setLong(1, id);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			long media_id = rs.getLong(1);
 			String name = rs.getString(2);
 			String url = rs.getString(3);
-			mediaFiles.add(new Media(media_id, name, url));
+			boolean isVideo = rs.getBoolean(4);
+			mediaFiles.add(new Media(media_id, name, url, isVideo));
 		}
 		return mediaFiles;
 	}

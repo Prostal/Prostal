@@ -38,7 +38,7 @@ public class ArticleController {
 			//increment immpressions
 			articleDao.incremenImpression(articleId);
 		} catch (SQLException e) {
-			System.out.println("op");
+			System.out.println("op"+e.getMessage());
 		}
 		//TODO THINK ABOUT SCOPE AGAIN
 		request.getSession().setAttribute("article", article);
@@ -67,8 +67,7 @@ public class ArticleController {
 	@RequestMapping(value = "/categoryArticles", method=RequestMethod.GET)
 	public String pickCategory(HttpServletRequest request, HttpServletResponse response){
 		//list all articles related to the category
-		String Id = request.getParameter("category");
-		long categoryId = Integer.parseInt(Id);
+		long categoryId = Long.parseLong(request.getParameter("category"));
 		
 		if(categoryId > 0){
 			Set<Article> articles;
@@ -77,7 +76,7 @@ public class ArticleController {
 				request.getSession().setAttribute("articles", articles);
 				
 			} catch (SQLException e) {
-				System.out.println("op");
+				System.out.println("op"+e.getMessage());
 			}
 		}
 		//reveals submenu with all the subcategories belonging to the category
@@ -100,7 +99,7 @@ public class ArticleController {
 				result.retainAll(byCategory);
 			}
 		} catch (SQLException e) {
-			System.out.println("op");
+			System.out.println("op"+e.getMessage());
 		}
 		//TODO THINK ABOUT LOW SCOPE
 		request.getSession().setAttribute("search", result);

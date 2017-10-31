@@ -9,9 +9,9 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 
-public class User implements Serializable{
+public class User{
 
-	private static final long serialVersionUID = -1331511385236279365L;
+	
 	public static final String AVATAR_URL = "C:\\uploads\\";
 	private long id;
 	

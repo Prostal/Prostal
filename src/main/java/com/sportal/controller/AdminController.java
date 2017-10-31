@@ -1,19 +1,15 @@
 package com.sportal.controller;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +42,7 @@ public class AdminController {
 	
 
 	@RequestMapping(value = "/postArticle", method = RequestMethod.POST)
-	public String postArticle(@RequestParam("image") MultipartFile file,HttpServletRequest request, HttpServletResponse response) {
+	public String postArticle(@RequestParam("image") MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
 		//collect data from request
 	
 		String title = request.getParameter("title");
@@ -61,27 +57,23 @@ public class AdminController {
 		long category_id = Long.parseLong(category);
 		
 		Set<Media> mediaFiles = new HashSet<>();
-	//	String url = null;
-//		try {
-//			url = getUrl(request);
-//		} catch (IllegalStateException | IOException | ServletException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
+
 		String original = file.getOriginalFilename();
 		String extension = FilenameUtils.getExtension(original);
 		String url = title.concat(".").concat(extension);
 		File f = new File(WebInitializer.LOCATION + File.separator + url);
-		try {
-			file.transferTo(f);
-			response.getOutputStream().flush();
-			response.getOutputStream().close();
-		} catch (IllegalStateException | IOException e1) {
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
-		}
+		
+			try {
+				file.transferTo(f);
+				
+			} catch (IllegalStateException | IOException e1) {
+				System.out.println("op");
+				return "index";
+			}
+			
 		// UPDATE IN DB
-		Media media = new Media(title, url);
+		System.out.println("url:"+f.getAbsolutePath());
+		Media media = new Media(title, f.getAbsolutePath(), false);//not video
 		mediaFiles.add(media);
 		long mediaId = 0;
 		try {
@@ -98,33 +90,65 @@ public class AdminController {
 			// publishArticle(article)
 			long articleId = articleDao.addArticle(article);
 			mediaDao.addInArticleMedia(articleId, mediaId);
+			System.out.println("after media dao");
+			
 		} catch (SQLException e) {
-			System.out.println("op");
+			System.out.println("postarticle"+e.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return "error";
 		}
-		return "redirect:user";
+		return "user";
 		
 	}
 	
-	private String getUrl(HttpServletRequest req) throws IllegalStateException, IOException, ServletException{
-		    Part avatarPart = req.getPart("image");
-		    String title = req.getParameter("title");
-			InputStream fis = avatarPart.getInputStream();
-			String image = Media.IMAGE_URL+title+".jpg";
-			File myFile = new File(image);
-			if(!myFile.exists()){
-				myFile.createNewFile();
+	@RequestMapping(value = "/addVideo", method = RequestMethod.POST)
+	public String addArticleMedia(@RequestParam("video") MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+		//collect data from request
+	
+		long articleId  = Long.parseLong(request.getParameter("articleId"));
+		Article article = null;
+		try {
+			article = articleDao.getArtticleById(articleId);
+		} catch (SQLException e2) {
+			// TODO Auto-generated catch block
+			System.out.println("op");
+		}
+		String title = article.getTitle();
+		
+
+		String mod = article.getMediaFiles().size()+"";//next num
+		String original = file.getOriginalFilename();
+		String extension = FilenameUtils.getExtension(original);
+		String url = title.concat(mod).concat(".").concat(extension);
+		File f = new File(WebInitializer.LOCATION + File.separator + url);
+		
+			try {
+				file.transferTo(f);
+				
+			} catch (IllegalStateException | IOException e1) {
+				System.out.println("op");
+				return "index";
 			}
-			FileOutputStream fos = new FileOutputStream(myFile);
-			int b = fis.read();
-			while(b != -1){
-				fos.write(b);
-				b = fis.read();
-			}
-			fis.close();
-			fos.close();
-			// UPDATE IN DB
-			return image;
+			
+		// UPDATE IN DB
+		System.out.println("url:"+f.getAbsolutePath());
+		Media media = new Media(title, f.getAbsolutePath(), true);
+		long mediaId;
+		try {
+			mediaId = mediaDao.addMedia(media);
+			mediaDao.addInArticleMedia(articleId, mediaId);
+		} catch (SQLException e) {
+			System.out.println("op");
+		}
+		
+		
+		System.out.println("after addmedia dao");
+			
+		
+		return "index";
+		
 	}
+
 	
 
 }
