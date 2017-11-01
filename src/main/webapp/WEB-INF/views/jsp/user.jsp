@@ -37,5 +37,6 @@
 		<c:if test="${user.admin }">
 			<jsp:include page="admin.jsp"></jsp:include>
 		</c:if>
+		<jsp:include page="footer.jsp"></jsp:include>
 	</body>
 </html>

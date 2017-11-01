@@ -111,6 +111,7 @@ function postComment() {
 			<%-- <a href="addArticleMedia?articleId=${article.id }"><button>delete ${article.title } </button></a> --%>
 	</c:if>
 
+<jsp:include page="footer.jsp"></jsp:include>
 
 </body>
 </html>
