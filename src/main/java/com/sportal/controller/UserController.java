@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -181,10 +182,9 @@ public class UserController {
 		return "user";
 	}
 	
-	@RequestMapping(value = "/showAvatar", method = RequestMethod.GET)
-	public String showMedia(HttpServletRequest request, HttpServletResponse response){
+	@RequestMapping(value = "/showAvatar/{userId}", method = RequestMethod.GET)
+	public void showMedia(@PathVariable("userId") Long userId, HttpServletRequest request, HttpServletResponse response){
 		
-		long userId = Long.parseLong(request.getParameter("userId"));
 
 		User user = null;
 		try {
@@ -192,7 +192,7 @@ public class UserController {
 		} catch (SQLException e1) {
 			request.setAttribute("error", "database problem : " + e1.getMessage());
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
+			return;
 		}
 		
 		String avatar = user.getAvatarUrl();
@@ -208,17 +208,16 @@ public class UserController {
 		} catch (IOException e) {
 			request.setAttribute("error", "input problem : " + e.getMessage());
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
+			return ;
 		}finally{
 			try {
 				response.getOutputStream().close();
 			} catch (IOException e) {
 				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-				return "error";
+				return ;
 			}
 		}
 		
-		return "article";
 	}
 
 	public boolean isValidEmailAddress(String email) {

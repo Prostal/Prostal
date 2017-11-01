@@ -48,7 +48,6 @@ function postComment() {
 }
 
 
-
 function likeComment(commentId) {
 	var request = new XMLHttpRequest();
 	var id = "commentId="+commentId;
@@ -136,14 +135,18 @@ function dislikeComment(commentId) {
 	</c:if>
 	
 	<c:forEach items="${article.comments}" var="comment">
-		
+		<c:set var="comentator" scope = "page" value="${comment.userId}" ></c:set>
 		<table border="1" id="commentstable">
-			
 			<tr>
-				<td><c:out value="${comment.content }"></c:out></td>
+				<td>
+					<img id="avatar" src="showAvatar/${comment.userId}"  width="50" height= auto>
+				</td>
 			</tr>
 			<tr>
-				<td><c:out value="${comment.likes }"></c:out></td>
+				<td>${comment.content }</td>
+			</tr>
+			<tr>
+				<td>${comment.timeCreated }</td>
 			</tr>
 		</table>
 		<c:if test="${user!=null }">
