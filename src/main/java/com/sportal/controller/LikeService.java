@@ -1,5 +1,6 @@
 package com.sportal.controller;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,17 +60,26 @@ public class LikeService {
 			e.printStackTrace();
 		}
 		// add vote in db
-		Vote vote = new Vote(commentId, user.getId());
+		/* Vote vote = new Vote(commentId, user.getId());
 		try {
-			voteDao.insertVote(vote);
-			commentDao.likeComment(commentId);
+			// voteDao.insertVote(vote);
+			// commentDao.likeComment(commentId);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
-		resp.setStatus(200);
+		try {
+
+			resp.setStatus(200);
+			String responseJsonString = "{\"articleId\": 123, \"likesCount\": 123, \"username\": \"cocko\"}";
+			resp.setContentType("application/json");
+			resp.getWriter().write(responseJsonString);
+			resp.getWriter().flush();
+			resp.getWriter().close();	
+		} catch (IOException ignored) {}
 	}
+	
 	
 	@RequestMapping(value="/dislike", method=RequestMethod.POST)
 	@ResponseBody

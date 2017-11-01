@@ -21,6 +21,9 @@ function postComment() {
 		//when response is received
 		if (this.readyState == 4 && this.status == 200) {
 			//reset comments input field???
+					
+			var table = document.getElementsByClassName("commentstable")[0].cloneNode();
+			/* table. */
 			
 			var table = document.getElementById("commentstable");
 			
@@ -44,17 +47,21 @@ function postComment() {
 	request.open("post", "comment", true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.send(comment);
+	debugger;
 	
 }
 
 
 function likeComment(commentId) {
 	var request = new XMLHttpRequest();
-	var id = "commentId="+commentId;
+	var path = "commentId="+commentId;
 	
 	request.onreadystatechange = function() {
 		//when response is received
 		if (this.readyState == 4 && this.status == 200) {
+			var responseData = JSON.parse(this.response);
+			var likesCount = responseData.likesCount;
+			var username = responseData.username;
 			
 			var button = document.getElementById("likebutton");
 			button.innerHTML = "liked";
@@ -69,7 +76,7 @@ function likeComment(commentId) {
 	}
 	request.open("post", "like", true);
 	request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	request.send(id);
+	var response = request.send(path);
 
 }
 
@@ -139,15 +146,16 @@ function dislikeComment(commentId) {
 			
 	</c:if>
 	
+	<div id="comment-section">
 	<c:forEach items="${article.comments}" var="comment">
 		<c:set var="comentator" scope = "page" value="${comment.userId}" ></c:set>
-		<table border="1" id="commentstable">
+		<table border="1" id="commentstable-${comment.commentId}" class="commentstable class2 class3">
 			<tr>
-				<td>
-					<img id="avatar" src="showAvatar/${comment.userId}"  width="50" height= auto>
+				<td class="avatar-row">
+					<img class="avatar-image" src="showAvatar/${comment.userId}"  width="50" height= auto>
 				</td>
 			</tr>
-			<tr>
+			<tr class="comment-content">
 				<td>${comment.content }</td>
 			</tr>
 			<tr>
@@ -155,12 +163,13 @@ function dislikeComment(commentId) {
 			</tr>
 		</table>
 		<c:if test="${user!=null }">
-			<button style="background-color: green" id="likebutton" onclick= "likeComment(commentId=${comment.commentId })">Like ${comment.likes }</button>
-			<button style="background-color: red" id="dislikebutton" onclick= "dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
+			<button style="background-color: green" id="likebutton-${comment.commentId}" onclick="likeComment(commentId=${comment.commentId })">Like ${comment.likes }</button>
+			<button style="background-color: red" id="dislikebutton-${comment.commentId}" onclick="dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
 		</c:if>
 		
 		<hr>
 	</c:forEach>
+	</div>
 	<c:if test="${user.admin }">
 		<hr>
 		<h2>Admin panel</h2>
