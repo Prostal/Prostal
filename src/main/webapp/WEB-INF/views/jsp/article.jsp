@@ -51,6 +51,11 @@ function postComment() {
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
+		<nav> <!-- side menu at the left page side --> 
+	<jsp:include
+		page="sidemenu.jsp"></jsp:include> </nav>
+	
+		<div id="right_body"> <!-- all the rest page content between header and footer-->
 	<c:set var="article" scope = "page" value="${sessionScope.article}" ></c:set>
 	
 	<div id="article">
@@ -111,6 +116,7 @@ function postComment() {
 			<%-- <a href="addArticleMedia?articleId=${article.id }"><button>delete ${article.title } </button></a> --%>
 	</c:if>
 
+	</div>
 <jsp:include page="footer.jsp"></jsp:include>
 
 </body>

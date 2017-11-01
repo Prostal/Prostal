@@ -11,6 +11,16 @@
 <body>
 
 		<jsp:include page="header.jsp"></jsp:include>
+		
+		
+	<nav> <!-- side menu at the left page side --> 
+	<jsp:include
+		page="sidemenu.jsp"></jsp:include> </nav>
+
+
+	<div id="right_body"> <!-- all the rest page content between header and footer-->
+		
+		
 		<c:forEach items="${ sessionScope.articles }" var="article">
 			<h2><a href="pickArticle?articleId=${article.id}" >${article.title }</a></h2>
 			
@@ -24,6 +34,8 @@
 				
 			<hr>
 		</c:forEach>
+		
+		</div>
 		
 	<jsp:include page="footer.jsp"></jsp:include>
 </body>
