@@ -14,21 +14,23 @@
    
    
 	<nav> <!-- side menu at the left page side --> 
-	<jsp:include
-		page="sidemenu.jsp"></jsp:include> </nav>
+	<jsp:include page="sidemenu.jsp"></jsp:include> </nav>
 
 
 	<div id="right_body"> <!-- all the rest page content between header and footer-->
    
 
-   <c:forEach items="${sessionScope.search}" var="search">
-				<c:out value="${search.title }"></c:out> <br>
-				<c:out value="${search.textContent }"></c:out> <br>
-				<c:out value="${search.impressions }"></c:out> <br>
-				<c:out value="${search.created }"></c:out> <br>
+   <c:forEach items="${sessionScope.search}" var="article">
+				<h1><a href="pickArticle?articleId=${article.id}" > ${article.title } </a></h1>
+				<!--<c:out value="${article.title }"></c:out>  <br> -->
+				<c:out value="${article.textContent }"></c:out> <br>
+				<c:out value="${article.impressions }"></c:out> <br>
+				<c:out value="${article.created }"></c:out> <br>
 				
-				<c:forEach items="${search.mediaFiles}" var="media">
-					<img id="media" src="ShowMedia?mediaId=${media.media_id}"  width="100" height= auto>
+				<c:forEach items="${article.mediaFiles}" var="media">
+					<c:if test="${!media.isVideo }">
+						<img id="media" src="ShowMedia?mediaId=${media.media_id}"  width="320" height= auto><br>
+					</c:if>
 				</c:forEach>
 				<hr>
 	 </c:forEach>

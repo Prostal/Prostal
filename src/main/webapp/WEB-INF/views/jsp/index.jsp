@@ -22,10 +22,30 @@
 	<div id="right_body"> <!-- all the rest page content between header and footer-->
 
 	
-		<a href="Top5?sort=impressions"><button class="button_most">most
-				viewed</button></a> <a href="Top5?sort=impressions"><button
-				class="button_most">most commented</button></a> <a
-			href="Top5?sort=impressions"><button class="button_most">leading</button></a>
+		<a href="Top5?sort=impressions"><button class="button_most">most viewed</button></a> 
+		<a href="Top5?sort=commented"><button class="button_most">most commented</button></a>
+		<a href="Top5?sort=leading"><button class="button_most">leading</button></a>
+	
+	</div>
+	
+	<div id="center"> <!-- all the rest page content between header and footer-->
+
+		
+	<c:forEach items="${sessionScope.leading}" var="leading">
+		<h1><a href="pickArticle?articleId=${leading.id}" > ${leading.title } </a></h1>
+		<!--<c:out value="${article.title }"></c:out>  <br> -->
+		<c:out value="${leading.textContent }"></c:out> <br>
+		impressions<c:out value="${leading.impressions }"></c:out> <br>
+		created on: <c:out value="${leading.created }"></c:out> <br>
+		
+		<c:forEach items="${leading.mediaFiles}" var="media">
+			<c:if test="${!media.isVideo }">
+				<img id="media" src="ShowMedia?mediaId=${media.media_id}"  width="100" height= auto><br>
+			</c:if>
+		</c:forEach>
+		<hr>
+	 </c:forEach>
+		 
 	
 	</div>
 

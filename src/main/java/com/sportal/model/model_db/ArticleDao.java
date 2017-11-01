@@ -130,6 +130,7 @@ public  class ArticleDao extends Dao{
 					
 					long articleId = rs.getLong(1);
 					long categoryId = rs.getLong(2);
+					title = rs.getString(3);
 					String textContent = rs.getString(4);
 					LocalDateTime created = rs.getTimestamp(5).toLocalDateTime();
 					long impressions = rs.getInt(6);
@@ -199,6 +200,72 @@ public  class ArticleDao extends Dao{
 			ResultSet rs = null;
 			String select = "SELECT a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading  FROM  articles as a  order by a.impressions desc limit 5";
 			try(PreparedStatement ps = con.prepareStatement(select)){
+				rs = ps.executeQuery();
+				while (rs.next()) {
+					
+					long articleId = rs.getLong(1);
+					long categoryId = rs.getLong(2);
+					String title = rs.getString(3);
+					String textContent = rs.getString(4);
+					LocalDateTime created = rs.getTimestamp(5).toLocalDateTime();
+					long impressions = rs.getInt(6);
+					boolean isLeading = rs.getInt(7)==1;
+					Set<Media> mediaFiles = mediaDao.getMediaByArticle(articleId);
+					Set<Comment> comments = commentDao.getCommentsByArticle(articleId);
+					Article a = new Article(articleId, title, textContent, categoryId, created, impressions, isLeading, mediaFiles,comments);
+					articles.add(a);
+				}
+				
+				return articles;
+			}
+			finally {
+				if (rs != null) {
+					rs.close();
+				}
+			}
+			
+			
+		}
+		
+		public Set<Article> getTop3Leading() throws SQLException{
+			Set<Article> articles = new HashSet<Article>();
+			Connection con  = dbManager.getConnection();
+			ResultSet rs = null;
+			String select = "SELECT a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading  FROM  articles as a WHERE a.isLeading=1  order by a.datetime desc limit 3";
+			try(PreparedStatement ps = con.prepareStatement(select)){
+				rs = ps.executeQuery();
+				while (rs.next()) {
+					
+					long articleId = rs.getLong(1);
+					long categoryId = rs.getLong(2);
+					String title = rs.getString(3);
+					String textContent = rs.getString(4);
+					LocalDateTime created = rs.getTimestamp(5).toLocalDateTime();
+					long impressions = rs.getInt(6);
+					boolean isLeading = rs.getInt(7)==1;
+					Set<Media> mediaFiles = mediaDao.getMediaByArticle(articleId);
+					Set<Comment> comments = commentDao.getCommentsByArticle(articleId);
+					Article a = new Article(articleId, title, textContent, categoryId, created, impressions, isLeading, mediaFiles,comments);
+					articles.add(a);
+				}
+				
+				return articles;
+			}
+			finally {
+				if (rs != null) {
+					rs.close();
+				}
+			}
+			
+			
+		}
+		
+		public Set<Article> getTop5ByComments() throws SQLException{
+			Set<Article> articles = new HashSet<Article>();
+			Connection con  = dbManager.getConnection();
+			ResultSet rs = null;
+			String selectMostCommented = "SELECT  a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading, count(c.comment_id) as comments FROM articles AS a JOIN comments c ON a.article_id = c.article_id GROUP BY a.article_id limit 5";
+			try(PreparedStatement ps = con.prepareStatement(selectMostCommented)){
 				rs = ps.executeQuery();
 				while (rs.next()) {
 					
