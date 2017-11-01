@@ -23,9 +23,9 @@
 
    <c:forEach items="${sessionScope.search}" var="search">
 				<c:out value="${search.title }"></c:out> <br>
-				<c:out value="${search.textContent }"></c:out> <br>
-				<c:out value="${search.impressions }"></c:out> <br>
-				<c:out value="${search.created }"></c:out> <br>
+				<c:out value="${search.textContent }"></c:out>  <br>
+				<span>Брой преглеждания: </span><c:out value="${search.impressions }"></c:out> <br>
+				<span>Създаден на: </span><c:out value="${search.created }"></c:out> <br>
 				
 				<c:forEach items="${search.mediaFiles}" var="media">
 					<img id="media" src="ShowMedia?mediaId=${media.media_id}"  width="100" height= auto>
