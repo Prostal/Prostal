@@ -28,8 +28,8 @@ public class ArticleController {
 	@RequestMapping(value = "/pickArticle", method = RequestMethod.GET)
 	public String getArticle(HttpServletRequest request, HttpServletResponse response) {
 		//review article content and all the media related to the article
-		String Id = request.getParameter("articleId");
-		long articleId = Integer.parseInt(Id);
+
+		long articleId = Long.parseLong(request.getParameter("articleId"));
 		
 		Article article = null;
 		try {
@@ -94,7 +94,7 @@ public class ArticleController {
 		try {
 			result.addAll(articleDao.getArtticlesByTitle(search));
 			if(category!=null){
-				long categoryId = Integer.parseInt(category);
+				long categoryId = Long.parseLong(category);
 				Set<Article> byCategory = articleDao.getArtticlesByCategory(categoryId);
 				result.retainAll(byCategory);
 			}

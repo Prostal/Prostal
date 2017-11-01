@@ -22,7 +22,6 @@ function postComment() {
 		if (this.readyState == 4 && this.status == 200) {
 			//reset comments input field???
 			
-			
 			var table = document.getElementById("commentstable");
 			
 			// Create an empty <tr> element and add it to the 1st position of the table:
@@ -46,6 +45,57 @@ function postComment() {
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.send(comment);
 	
+}
+
+
+function likeComment(commentId) {
+	var request = new XMLHttpRequest();
+	var id = "commentId="+commentId;
+	
+	request.onreadystatechange = function() {
+		//when response is received
+		if (this.readyState == 4 && this.status == 200) {
+			
+			var button = document.getElementById("likebutton");
+			button.innerHTML = "liked";
+		}
+		else if (this.readyState == 4 && this.status == 401) {
+			alert("Sorry, you must log in to like this video!");
+		}
+		else if (this.readyState == 4 && this.status == 402) {
+				alert("Sorry, you have voted already!");
+		}
+			
+	}
+	request.open("post", "like", true);
+	request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	request.send(id);
+
+}
+
+function dislikeComment(commentId) {
+	var request = new XMLHttpRequest();
+	var id = "commentId="+commentId;
+	
+	request.onreadystatechange = function() {
+		//when response is received
+		if (this.readyState == 4 && this.status == 200) {
+			
+			var button = document.getElementById("dislikebutton");
+			button.innerHTML = "disliked";
+		}
+		else if (this.readyState == 4 && this.status == 401) {
+			alert("Sorry, you must log in to like this video!");
+		}
+		else if (this.readyState == 4 && this.status == 402) {
+				alert("Sorry, you have voted already!");
+		}
+			
+	}
+	request.open("post", "dislike", true);
+	request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	request.send(id);
+
 }
 </script>  
 </head>
@@ -90,13 +140,24 @@ function postComment() {
 	</c:if>
 	
 	<c:forEach items="${article.comments}" var="comment">
-		
+		<c:set var="comentator" scope = "page" value="${comment.userId}" ></c:set>
 		<table border="1" id="commentstable">
-			
 			<tr>
-				<td><c:out value="${comment.content }"></c:out></td>
+				<td>
+					<img id="avatar" src="showAvatar/${comment.userId}"  width="50" height= auto>
+				</td>
+			</tr>
+			<tr>
+				<td>${comment.content }</td>
+			</tr>
+			<tr>
+				<td>${comment.timeCreated }</td>
 			</tr>
 		</table>
+		<c:if test="${user!=null }">
+			<button style="background-color: green" id="likebutton" onclick= "likeComment(commentId=${comment.commentId })">Like ${comment.likes }</button>
+			<button style="background-color: red" id="dislikebutton" onclick= "dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
+		</c:if>
 		
 		<hr>
 	</c:forEach>
@@ -107,7 +168,7 @@ function postComment() {
 			delete article :
 			<a href="deleteArticle?articleId=${article.id }"><button>delete ${article.title } </button></a>
 			<br>
-			add media :
+			add video :
 			<form action="addVideo" method="post" enctype="multipart/form-data">
 				<input type="text" name="articleId"  value="${article.id }"><br>
 				<input type="file" name="video"><br>
