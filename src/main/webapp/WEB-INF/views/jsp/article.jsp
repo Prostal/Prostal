@@ -8,39 +8,31 @@
 <html>
 <head>
 <link type="text/css" href="css/main.css" rel="stylesheet">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>${article.title }</title>
 
 <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
-<script type="text/javascript">
-
-
-
+<script type="text/javascript">  
 function postComment() {
 	var request = new XMLHttpRequest();
-	//var user = "user="+user;
-	request.open("post", "comment", true);
+	var data = CKEDITOR.instances.editor1.getData();
+	var comment = "comment="+data;
 	request.onreadystatechange = function() {
 		//when response is received
 		if (this.readyState == 4 && this.status == 200) {
+			//reset comments input field???
 			
-			var comment = JSON.parse(this.responseText);
-			
-			var commenttxt = document.getElementById("editor1").value;
 			
 			var table = document.getElementById("commentstable");
-
+			
 			// Create an empty <tr> element and add it to the 1st position of the table:
-			var row1 = table.insertRow(0);//<tr></tr>
-			//var row2 = table.insertRow(1);
+			var row = table.insertRow(0);//<tr></tr>
+
 			// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
-			var cell1 = row1.insertCell(0);//<td></td>
-			//var cell2 = row2.insertCell(0);
+			var cell1 = row.insertCell(0);//<td></td>
 
 			// Add some text to the new cells:
-			//cell1.innerHTML = userId;
-			cell1.innerHTML = commenttxt;
-			
+			cell1.innerHTML = data;
 			//append first child to table of comments with the value
 		}
 		else
@@ -50,10 +42,12 @@ function postComment() {
 			
 	}
 	
-	request.send();
+	request.open("post", "comment", true);
+	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	request.send(comment);
+	
 }
-
-</script>
+</script>  
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
@@ -68,36 +62,32 @@ function postComment() {
 	
 	<c:forEach items="${article.mediaFiles}" var="media">
 		<c:if test="${media.isVideo }">
-			<video width="320" height="240" controls autoplay>
+			<video width="320" height="240"  controls autoplay >
 			  <source src="ShowMedia?mediaId=${media.media_id}" >
 			</video>
 		</c:if>
-		
-		<img id="media" src="ShowMedia?mediaId=${media.media_id}"  width="320" height= auto><br>
+		<c:if test="${!media.isVideo }">
+			<img id="media" src="ShowMedia?mediaId=${media.media_id}"  width="320" height= auto><br>
+		</c:if>
 	</c:forEach>
 	<hr>
 <h2>Comments</h2>
 	 <c:if test="${user!=null }">
-		
-		<form action="comment" method="post">
-			<p>
-				<label for="editor1">Editor 1:</label>
-				<textarea cols="80" id="editor1" name="editor1" rows="10"></textarea>
-				<script>
-                	CKEDITOR.replace( 'editor1' );
-            	</script>
-			</p>
-			<p>
-				<input type="submit" value="Submit" />
-			</p>
-		</form>
+	 
+			
+		<label for="editor1">Editor 1:</label>
+		<textarea cols="60" id="editor1" name="editor1" rows="4"></textarea>
+		<script>
+              	CKEDITOR.replace( 'editor1' );
+       	</script>
+       	<button onclick="postComment()">Submit Comment</button>
+			
 	</c:if>
+	
 	<c:forEach items="${article.comments}" var="comment">
 		
 		<table border="1" id="commentstable">
-			<%-- <tr>
-				<td><c:out value="${comment.userId }"></c:out></td>
-			</tr> --%>
+			
 			<tr>
 				<td><c:out value="${comment.content }"></c:out></td>
 			</tr>

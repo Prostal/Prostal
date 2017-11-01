@@ -57,7 +57,7 @@ public class AdminController {
 		long category_id = Long.parseLong(category);
 		
 		Set<Media> mediaFiles = new HashSet<>();
-
+		
 		String original = file.getOriginalFilename();
 		String extension = FilenameUtils.getExtension(original);
 		String url = title.concat(".").concat(extension);
@@ -116,7 +116,7 @@ public class AdminController {
 		String title = article.getTitle();
 		
 
-		String mod = article.getMediaFiles().size()+"";//next num
+		String mod = article.getMediaFiles().size()+"sportal";//next num
 		String original = file.getOriginalFilename();
 		String extension = FilenameUtils.getExtension(original);
 		String url = title.concat(mod).concat(".").concat(extension);
