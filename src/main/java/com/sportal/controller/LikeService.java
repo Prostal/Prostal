@@ -31,17 +31,11 @@ public class LikeService {
 	@ResponseBody
 	public void likeComment(HttpServletRequest req, HttpServletResponse resp){
 		
-		System.out.println("commentId "+req.getParameter("commentId"));
+		//System.out.println("commentId "+req.getParameter("commentId"));
 		long commentId = Long.parseLong(req.getParameter("commentId"));
 		//vote(req, resp,commentId);
 		//test only
-//		try {
-//			Comment test = commentDao.getCommentById(commentId);
-//			System.out.println("likes = "+test.getLikes());
-//		} catch (SQLException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
+
 		//check if logged
 		User user = (User) req.getSession().getAttribute("user");
 		if(user==null){
@@ -51,7 +45,6 @@ public class LikeService {
 		//check if voted
 		try {
 			if(voteDao.hasVotedForComment(user.getId(), commentId)){
-				//commentDao.deleteComments(testClean);
 				resp.setStatus(402);
 				return;
 			}
@@ -60,24 +53,39 @@ public class LikeService {
 			e.printStackTrace();
 		}
 		// add vote in db
-		/* Vote vote = new Vote(commentId, user.getId());
+		Vote vote = new Vote(commentId, user.getId());
+		long likesCount = 0;
 		try {
-			// voteDao.insertVote(vote);
-			// commentDao.likeComment(commentId);
+			voteDao.insertVote(vote);
+			commentDao.likeComment(commentId);
+			Comment c = commentDao.getCommentById(commentId);
+			likesCount = c.getLikes();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		
+		resp.setStatus(200);
+		String responseJsonString = "{\"likesCount\": "+likesCount+", \"commentId\": "+commentId+"}";
+		resp.setContentType("application/json");
 		try {
-
-			resp.setStatus(200);
-			String responseJsonString = "{\"articleId\": 123, \"likesCount\": 123, \"username\": \"cocko\"}";
-			resp.setContentType("application/json");
 			resp.getWriter().write(responseJsonString);
-			resp.getWriter().flush();
-			resp.getWriter().close();	
-		} catch (IOException ignored) {}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			
+			try {
+				resp.getWriter().flush();
+				resp.getWriter().close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+			
+		
 	}
 	
 	
@@ -88,7 +96,10 @@ public class LikeService {
 		long commentId = Long.parseLong(req.getParameter("commentId"));
 		
 //TODO FIX REPATED CODE
+		
 		//vote(req, resp,commentId);
+		//test only
+
 		//check if logged
 		User user = (User) req.getSession().getAttribute("user");
 		if(user==null){
@@ -98,7 +109,6 @@ public class LikeService {
 		//check if voted
 		try {
 			if(voteDao.hasVotedForComment(user.getId(), commentId)){
-				//commentDao.deleteComments(testClean);
 				resp.setStatus(402);
 				return;
 			}
@@ -108,15 +118,36 @@ public class LikeService {
 		}
 		// add vote in db
 		Vote vote = new Vote(commentId, user.getId());
+		long dislikesCount = 0;
 		try {
 			voteDao.insertVote(vote);
 			commentDao.dislikeComment(commentId);
+			Comment c = commentDao.getCommentById(commentId);
+			dislikesCount = c.getDislikes();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		resp.setStatus(200);
+		String responseJsonString = "{\"dislikesCount\": "+dislikesCount+", \"commentId\": "+commentId+"}";
+		resp.setContentType("application/json");
+		try {
+			resp.getWriter().write(responseJsonString);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			
+			try {
+				resp.getWriter().flush();
+				resp.getWriter().close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

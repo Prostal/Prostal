@@ -21,20 +21,27 @@ function postComment() {
 		//when response is received
 		if (this.readyState == 4 && this.status == 200) {
 			//reset comments input field???
-					
-			var table = document.getElementsByClassName("commentstable")[0].cloneNode();
-			/* table. */
+			var responseData = JSON.parse(this.response);
+			var username = responseData.username;
+			var time = responseData.commentTime;
+			var commentId = responseData.commentId;
 			
-			var table = document.getElementById("commentstable");
-			
+			/* JSON "{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";*/"{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";
+			var table = document.getElementsByClassName("commentstable class")[0].cloneNode(true);
+			//var table = document.getElementById("commentstable-".concat(commentId));
+			alert(table);
 			// Create an empty <tr> element and add it to the 1st position of the table:
-			var row = table.insertRow(0);//<tr></tr>
-
+			var row1 = table.insertRow(0);//<tr></tr>
+			var row2 = table.insertRow(1);
+			var row3 = table.insertRow(2);
 			// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
 			var cell1 = row.insertCell(0);//<td></td>
-
+			var cell2 = row.insertCell(1);
+			var cell3 = row.insertCell(2);
 			// Add some text to the new cells:
-			cell1.innerHTML = data;
+			cell1.innerHTML = username;
+			cell2.innerHTML = data;
+			cell3.innerHTML = commentTime;
 			//append first child to table of comments with the value
 		}
 		else
@@ -47,7 +54,7 @@ function postComment() {
 	request.open("post", "comment", true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.send(comment);
-	debugger;
+	//debugger;
 	
 }
 
@@ -61,13 +68,12 @@ function likeComment(commentId) {
 		if (this.readyState == 4 && this.status == 200) {
 			var responseData = JSON.parse(this.response);
 			var likesCount = responseData.likesCount;
-			var username = responseData.username;
-			
-			var button = document.getElementById("likebutton");
-			button.innerHTML = "liked";
+			var commentId = responseData.commentId;
+			var button = document.getElementById("likebutton-".concat(commentId));
+			button.innerHTML = "liked ".concat(likesCount);
 		}
 		else if (this.readyState == 4 && this.status == 401) {
-			alert("Sorry, you must log in to like this video!");
+			alert("Sorry, you must log in to like this comment!");
 		}
 		else if (this.readyState == 4 && this.status == 402) {
 				alert("Sorry, you have voted already!");
@@ -82,17 +88,20 @@ function likeComment(commentId) {
 
 function dislikeComment(commentId) {
 	var request = new XMLHttpRequest();
-	var id = "commentId="+commentId;
+	var path = "commentId="+commentId;
 	
 	request.onreadystatechange = function() {
 		//when response is received
 		if (this.readyState == 4 && this.status == 200) {
+			var responseData = JSON.parse(this.response);
+			var dislikesCount = responseData.dislikesCount;
+			var commentId = responseData.commentId;
 			
-			var button = document.getElementById("dislikebutton");
-			button.innerHTML = "disliked";
+			var button = document.getElementById("dislikebutton-".concat(commentId));
+			button.innerHTML = "disliked ".concat(dislikesCount);
 		}
 		else if (this.readyState == 4 && this.status == 401) {
-			alert("Sorry, you must log in to like this video!");
+			alert("Sorry, you must log in to dislike this comment!");
 		}
 		else if (this.readyState == 4 && this.status == 402) {
 				alert("Sorry, you have voted already!");
@@ -101,7 +110,7 @@ function dislikeComment(commentId) {
 	}
 	request.open("post", "dislike", true);
 	request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	request.send(id);
+	var response = request.send(path);
 
 }
 </script>  
@@ -149,7 +158,7 @@ function dislikeComment(commentId) {
 	<div id="comment-section">
 	<c:forEach items="${article.comments}" var="comment">
 		<c:set var="comentator" scope = "page" value="${comment.userId}" ></c:set>
-		<table border="1" id="commentstable-${comment.commentId}" class="commentstable class2 class3">
+		<table border="1" id="commentstable-${comment.commentId}" class="commentstable class">
 			<tr>
 				<td class="avatar-row">
 					<img class="avatar-image" src="showAvatar/${comment.userId}"  width="50" height= auto>

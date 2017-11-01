@@ -3,7 +3,9 @@ package com.sportal.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -92,8 +94,11 @@ public class Article implements Serializable{
 		return Collections.unmodifiableSet(mediaFiles);
 	}
 
-	public Set<Comment> getComments() {
-		return comments;
+	public TreeSet<Comment> getComments() {
+		TreeSet<Comment> sortedByTime = new TreeSet<>(( o1,  o2)->
+			o2.getTimeCreated().compareTo(o1.getTimeCreated()));
+		sortedByTime.addAll(comments);
+		return sortedByTime;
 	}
 
 	@Override

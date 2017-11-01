@@ -1,5 +1,6 @@
 package com.sportal.controller;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -49,13 +50,32 @@ public class CommentService {
 	
 		try {
 			//insert new comment related to the article where the user is
-			commentDao.addComment(comment);
+			comment = commentDao.addComment(comment);
 		} catch (SQLException e) {
 			System.out.println("op"+e.getMessage());
 		}
-		System.out.println("service completed");
+		
 		//refresh article comments and forward to the article URL
+		String responseJsonString = "{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";
+		resp.setContentType("application/json");
+		try {
+			resp.getWriter().write(responseJsonString);
+		} catch (IOException e) {
+			//TODO
+			e.printStackTrace();
+		}finally{
+			try {
+				resp.getWriter().flush();
+				resp.getWriter().close();
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("commented");
 		resp.setStatus(200);
+		
 	}
 	
 }

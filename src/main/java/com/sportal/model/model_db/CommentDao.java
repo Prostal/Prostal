@@ -24,7 +24,7 @@ public  class CommentDao extends Dao{
 	private VoteDao voteDao;
 	
 
-	public  void addComment(Comment comment) throws SQLException{
+	public  Comment addComment(Comment comment) throws SQLException{
 		Connection con = dbManager.getConnection();
 		PreparedStatement ps = con.prepareStatement("INSERT INTO comments (user_id, article_id, content, likes, dislikes, date_time, isApproved ) VALUES (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 		ps.setLong(1, comment.getUserId());
@@ -39,7 +39,7 @@ public  class CommentDao extends Dao{
 		rs.next();
 		long id = rs.getLong(1);
 		comment.setId(id);
-		//addInCommentsByArticle(comment.getArticleId(),comment);
+		return comment;
 		
 	}
 	
