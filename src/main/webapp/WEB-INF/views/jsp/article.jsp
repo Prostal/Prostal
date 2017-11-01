@@ -128,8 +128,8 @@ function dislikeComment(commentId) {
 	<h1><c:out value="${article.title }"></c:out></h1> <br>
 	<c:out value="${article.textContent }"></c:out> <br>
 	</div>			
-	<c:out value="${article.impressions }"></c:out> <br>
-	<c:out value="${article.created }"></c:out> <br>
+	<span>Брой преглеждания: </span><c:out value="${article.impressions }"></c:out> <br>
+	<span>Създаден на: </span><c:out value="${article.created }"></c:out> <br>
 	
 	<c:forEach items="${article.mediaFiles}" var="media">
 		<c:if test="${media.isVideo }">
