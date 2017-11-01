@@ -19,7 +19,9 @@
 				<c:out value="${article.created }"></c:out> <br>
 				
 				<c:forEach items="${article.mediaFiles}" var="media">
-					<img id="media" src="ShowMedia?mediaId=${media.media_id}"  width="100" height= auto>
+					<c:if test="${!media.isVideo }">
+						<img id="media" src="ShowMedia?mediaId=${media.media_id}"  width="320" height= auto><br>
+					</c:if>
 				</c:forEach>
 				<hr>
 	 </c:forEach>

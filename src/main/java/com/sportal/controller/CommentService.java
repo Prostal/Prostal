@@ -28,22 +28,27 @@ public class CommentService {
 	@ResponseBody
 	public void Comment(HttpServletRequest req, HttpServletResponse resp){
  		//check if user is logged in
-		//collect data from request
+		
 		User user = (User) req.getSession().getAttribute("user");
+		if(user==null){
+			resp.setStatus(401);
+			return;
+		}
+		//collect data from request
 		long userId = user.getId();
 		System.out.println(user.getUsername());
 		Article article = (Article) req.getSession().getAttribute("article");
 		long articleId = article.getId();
 		System.out.println(article.getTitle());
 		//req.setCharacterEncoding("UTF-8");
-		String content = req.getParameter("content");
+		String content = req.getParameter("comment");
 		System.out.println("Content"+content);
 		//String result = URLDecoder.decode(content, "UTF-8");
 		
 		Comment comment = new Comment(userId, articleId, content, 0, 0, LocalDateTime.now(), true, new HashSet<>());
 	
 		try {
-			//insert new comment related to the article where the user is (URL??)
+			//insert new comment related to the article where the user is
 			commentDao.addComment(comment);
 		} catch (SQLException e) {
 			System.out.println("op"+e.getMessage());
@@ -52,4 +57,5 @@ public class CommentService {
 		//refresh article comments and forward to the article URL
 		resp.setStatus(200);
 	}
+	
 }
