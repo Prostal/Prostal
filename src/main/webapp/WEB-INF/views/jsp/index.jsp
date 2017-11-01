@@ -10,21 +10,27 @@
 </head>
 <body>
 
+	<!-- page header with logo, search, login, user etc.  -->
 	<jsp:include page="header.jsp"></jsp:include>
-<div >
-	<a href="Top5?sort=impressions"><button class = "button_most">most
-			viewed</button></a>
-	<a href="Top5?sort=impressions"><button class = "button_most">most
-			commented</button></a>
-	<a href="Top5?sort=impressions"><button class = "button_most">leading</button></a>
-</div>
 
-	<br>
-	<br>
-	<br>
-	<br>
-	<jsp:include page="sidemenu.jsp"></jsp:include>
 
+	<nav> <!-- side menu at the left page side --> 
+	<jsp:include
+		page="sidemenu.jsp"></jsp:include> </nav>
+
+
+	<div id="right_body"> <!-- all the rest page content between header and footer-->
+
+	
+		<a href="Top5?sort=impressions"><button class="button_most">most
+				viewed</button></a> <a href="Top5?sort=impressions"><button
+				class="button_most">most commented</button></a> <a
+			href="Top5?sort=impressions"><button class="button_most">leading</button></a>
+	
+	</div>
+
+
+	<!-- footer with copy rights and cotacts -->
 	<jsp:include page="footer.jsp"></jsp:include>
 
 </body>

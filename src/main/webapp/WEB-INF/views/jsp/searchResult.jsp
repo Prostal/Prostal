@@ -11,6 +11,15 @@
 <body>
 
    <jsp:include page="header.jsp"></jsp:include>
+   
+   
+	<nav> <!-- side menu at the left page side --> 
+	<jsp:include
+		page="sidemenu.jsp"></jsp:include> </nav>
+
+
+	<div id="right_body"> <!-- all the rest page content between header and footer-->
+   
 
    <c:forEach items="${sessionScope.search}" var="search">
 				<c:out value="${search.title }"></c:out> <br>
@@ -23,6 +32,8 @@
 				</c:forEach>
 				<hr>
 	 </c:forEach>
+
+</div>
 
 <jsp:include page="footer.jsp"></jsp:include>
 
