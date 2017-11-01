@@ -9,6 +9,11 @@ body {
 					 
 }
 
+#side_menu {
+	/*float: left;
+	margin-right: 30px;*/
+}
+
 .button_most {
 	background-color: black;
 	color: white;
