@@ -126,7 +126,7 @@ function dislikeComment(commentId) {
 	
 	<div id="article">
 	<h1><c:out value="${article.title }"></c:out></h1> <br>
-	<c:out value="${article.textContent }"></c:out> <br>
+	<span>${article.textContent }</span> <br>
 	</div>			
 	<span>Брой преглеждания: </span><c:out value="${article.impressions }"></c:out> <br>
 	<span>Създаден на: </span><c:out value="${article.created }"></c:out> <br>
@@ -158,7 +158,7 @@ function dislikeComment(commentId) {
 	<div id="comment-section">
 	<c:forEach items="${article.comments}" var="comment">
 		<c:set var="comentator" scope = "page" value="${comment.userId}" ></c:set>
-		<table border="1" id="commentstable-${comment.commentId}" class="commentstable class">
+		<table id="commentstable-${comment.commentId}" class="commentstable class">
 			<tr>
 				<td class="avatar-row">
 					<img class="avatar-image" src="showAvatar/${comment.userId}"  width="50" height= auto>

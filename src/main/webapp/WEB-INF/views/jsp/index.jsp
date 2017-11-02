@@ -20,12 +20,13 @@
 
 
 	<div id="right_body"> <!-- all the rest page content between header and footer-->
-
+	
 	
 		<a href="Top5?sort=impressions"><button class="button_most">most viewed</button></a> 
 		<a href="Top5?sort=commented"><button class="button_most">most commented</button></a>
 		<a href="Top5?sort=leading"><button class="button_most">leading</button></a>
 	
+		<jsp:include page="jcarousel.jsp"></jsp:include>
 	</div>
 	
 	<div id="center"> <!-- all the rest page content between header and footer-->
@@ -48,6 +49,13 @@
 		 
 	
 	</div>
+	
+	
+	
+	
+	
+	
+	
 
 
 	<!-- footer with copy rights and cotacts -->
