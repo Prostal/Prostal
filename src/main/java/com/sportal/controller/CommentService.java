@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,13 +39,11 @@ public class CommentService {
 		}
 		//collect data from request
 		long userId = user.getId();
-		System.out.println(user.getUsername());
 		Article article = (Article) req.getSession().getAttribute("article");
 		long articleId = article.getId();
-		System.out.println(article.getTitle());
 		//req.setCharacterEncoding("UTF-8");
 		String content = req.getParameter("comment");
-		System.out.println("Content"+content);
+		
 		//String result = URLDecoder.decode(content, "UTF-8");
 		
 		Comment comment = new Comment(userId, articleId, content, 0, 0, LocalDateTime.now(), true, new HashSet<>());
@@ -52,28 +52,31 @@ public class CommentService {
 			//insert new comment related to the article where the user is
 			comment = commentDao.addComment(comment);
 		} catch (SQLException e) {
-			System.out.println("op"+e.getMessage());
+			System.out.println("commentService"+e.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			
 		}
 		
 		//refresh article comments and forward to the article URL
-		String responseJsonString = "{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";
+		String responseJsonString = "{\"username\": \""+user.getUsername()+"\", \"userId\": "+userId+", \"commentTime\": \""+comment.getTimeCreated().toString()+"\"}";
 		resp.setContentType("application/json");
 		try {
 			resp.getWriter().write(responseJsonString);
 		} catch (IOException e) {
-			//TODO
-			e.printStackTrace();
+			System.out.println("postarticle"+e.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			
 		}finally{
 			try {
 				resp.getWriter().flush();
 				resp.getWriter().close();
 			} catch (IOException e) {
-
-				e.printStackTrace();
+				System.out.println("postarticle"+e.getMessage());
+				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				
 			}
 		}
 		
-		System.out.println("commented");
 		resp.setStatus(200);
 		
 	}

@@ -24,24 +24,23 @@ function postComment() {
 			var responseData = JSON.parse(this.response);
 			var username = responseData.username;
 			var time = responseData.commentTime;
-			var commentId = responseData.commentId;
+			var userId = responseData.userId;
 			
-			/* JSON "{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";*/"{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";
-			var table = document.getElementsByClassName("commentstable class")[0].cloneNode(true);
-			//var table = document.getElementById("commentstable-".concat(commentId));
-			alert(table);
+			var table = document.getElementById("commentstable");
+			
 			// Create an empty <tr> element and add it to the 1st position of the table:
 			var row1 = table.insertRow(0);//<tr></tr>
 			var row2 = table.insertRow(1);
 			var row3 = table.insertRow(2);
 			// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
-			var cell1 = row.insertCell(0);//<td></td>
-			var cell2 = row.insertCell(1);
-			var cell3 = row.insertCell(2);
+			var cell1 = row1.insertCell(0);//<td></td>
+			var cell2 = row2.insertCell(0);
+			var cell3 = row3.insertCell(0);
 			// Add some text to the new cells:
+				//<img  src= showAvatar/userId  width="50" height= auto>;
 			cell1.innerHTML = username;
 			cell2.innerHTML = data;
-			cell3.innerHTML = commentTime;
+			cell3.innerHTML = time;
 			//append first child to table of comments with the value
 		}
 		else
@@ -54,7 +53,7 @@ function postComment() {
 	request.open("post", "comment", true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.send(comment);
-	//debugger;
+	
 	
 }
 
@@ -126,7 +125,7 @@ function dislikeComment(commentId) {
 	
 	<div id="article">
 	<h1><c:out value="${article.title }"></c:out></h1> <br>
-	<c:out value="${article.textContent }"></c:out> <br>
+	<span>${article.textContent }</span> <br>
 	</div>			
 	<span>Брой преглеждания: </span><c:out value="${article.impressions }"></c:out> <br>
 	<span>Създаден на: </span><c:out value="${article.created }"></c:out> <br>
@@ -156,28 +155,36 @@ function dislikeComment(commentId) {
 	</c:if>
 	
 	<div id="comment-section">
-	<c:forEach items="${article.comments}" var="comment">
+	
 		<c:set var="comentator" scope = "page" value="${comment.userId}" ></c:set>
-		<table border="1" id="commentstable-${comment.commentId}" class="commentstable class">
-			<tr>
-				<td class="avatar-row">
-					<img class="avatar-image" src="showAvatar/${comment.userId}"  width="50" height= auto>
-				</td>
-			</tr>
-			<tr class="comment-content">
-				<td>${comment.content }</td>
-			</tr>
-			<tr>
-				<td>${comment.timeCreated }</td>
-			</tr>
+		<table border="1" id="commentstable" >
+			<c:forEach items="${article.comments}" var="comment">
+				<tr>
+					<td class="avatar-row">
+						<img class="avatar-image" src="showAvatar/${comment.userId}"  width="50" height= auto>
+					</td>
+				</tr>
+				<tr class="comment-row">
+					<td>${comment.content }</td>
+				</tr>
+				<tr class="timeCreated-row">
+					<td>${comment.timeCreated }</td>
+				</tr>
+				<tr>
+					<td>
+						<button style="background-color: green" id="likebutton-${comment.commentId}" onclick="likeComment(commentId=${comment.commentId })">Like ${comment.likes }</button>
+						<button style="background-color: red" id="dislikebutton-${comment.commentId}" onclick="dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
+					</td>
+				</tr>
+				
+			</c:forEach>
+			
 		</table>
 		<c:if test="${user!=null }">
-			<button style="background-color: green" id="likebutton-${comment.commentId}" onclick="likeComment(commentId=${comment.commentId })">Like ${comment.likes }</button>
-			<button style="background-color: red" id="dislikebutton-${comment.commentId}" onclick="dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
+			
 		</c:if>
 		
 		<hr>
-	</c:forEach>
 	</div>
 	<c:if test="${user.admin }">
 		<hr>
