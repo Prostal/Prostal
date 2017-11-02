@@ -126,8 +126,9 @@ public class AdminController {
 				file.transferTo(f);
 				
 			} catch (IllegalStateException | IOException e1) {
-				System.out.println("op");
-				return "index";
+				System.out.println("admin"+e1.getMessage());
+				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				return "error";
 			}
 			
 		// UPDATE IN DB

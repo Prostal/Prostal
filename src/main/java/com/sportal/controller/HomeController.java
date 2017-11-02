@@ -48,7 +48,7 @@ public class HomeController {
 		
 		Set<Article> leadingDao;
 		try {
-			leadingDao = articleDao.getTop3Leading();
+			leadingDao = articleDao.getTop5Leading();
 		} catch (SQLException e) {
 			request.setAttribute("error", "database problem : " + e.getMessage());
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);

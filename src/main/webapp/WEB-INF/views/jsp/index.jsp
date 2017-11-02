@@ -35,7 +35,7 @@
 	<c:forEach items="${sessionScope.leading}" var="leading">
 		<h1><a href="pickArticle?articleId=${leading.id}" > ${leading.title } </a></h1>
 		<!--<c:out value="${article.title }"></c:out>  <br> -->
-		<c:out value="${leading.textContent }"></c:out> <br>
+		<span>${leading.textContent }</span> <br>
 		impressions<c:out value="${leading.impressions }"></c:out> <br>
 		created on: <c:out value="${leading.created }"></c:out> <br>
 		
