@@ -7,8 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -227,11 +229,14 @@ public  class ArticleDao extends Dao{
 			
 		}
 		
-		public Set<Article> getTop3Leading() throws SQLException{
-			Set<Article> articles = new HashSet<Article>();
+		public Set<Article> getTop5Leading() throws SQLException{
+			Set<Article> articles = new TreeSet<Article>(( o1, o2) ->
+			
+					o2.getCreated().compareTo(o1.getCreated()));
+			
 			Connection con  = dbManager.getConnection();
 			ResultSet rs = null;
-			String select = "SELECT a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading  FROM  articles as a WHERE a.isLeading=1  order by a.datetime desc limit 3";
+			String select = "SELECT a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading  FROM  articles as a WHERE a.isLeading=1  order by a.datetime desc limit 5";
 			try(PreparedStatement ps = con.prepareStatement(select)){
 				rs = ps.executeQuery();
 				while (rs.next()) {

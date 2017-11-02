@@ -136,7 +136,7 @@ public class ArticleController {
 			break;
 		case "leading":
 			try {
-				articles.addAll(articleDao.getTop3Leading());
+				articles.addAll(articleDao.getTop5Leading());
 				// filter leading by period here if ypu want
 				request.getSession().setAttribute("articles", articles);
 
