@@ -15,8 +15,8 @@
 			<h1 style="color: red">Sorry,  ${requestScope.error }</h1>
 		</c:if>
 		<form action="login" method="post">
-			Username <input type="text" name="username"><br>
-			Password <input type="password" name="password"><br>
+			Username <input type="text" name="username" required="true"><br>
+			Password <input type="password" name="password" required="true"><br>
 			<input type="submit" value="Log in"><br>
 		</form>
 		

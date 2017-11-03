@@ -1,13 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<link type="text/css" href="css/main.css" rel="stylesheet">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-</head>
-<body >
 <div id="header_body">
 	<a href="index"><img src="/Sportal/img/logo.png" alt=""></a>
 	<div id="top_user_options">
@@ -57,7 +49,4 @@
 
 	<jsp:include page="search.jsp"></jsp:include>
 	<br>
-	</div> <!-- header body div end... DO NOT TOUCH! -->
-	
-</body>
-</html>
+</div> <!-- header body div end... DO NOT TOUCH! -->
