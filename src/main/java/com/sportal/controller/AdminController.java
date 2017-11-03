@@ -58,25 +58,33 @@ public class AdminController {
 		
 		Set<Media> mediaFiles = new HashSet<>();
 		
-		String original = file.getOriginalFilename();
-		String extension = FilenameUtils.getExtension(original);
-		String url = title.concat(".").concat(extension);
-		File f = new File(WebInitializer.LOCATION + File.separator + url);
-		
-			try {
-				file.transferTo(f);
-				
-			} catch (IllegalStateException | IOException e1) {
-				System.out.println("op");
-				return "index";
-			}
+
 			
-		// UPDATE IN DB
-		System.out.println("url:"+f.getAbsolutePath());
-		Media media = new Media(title, f.getAbsolutePath(), false);//not video
-		mediaFiles.add(media);
-		long mediaId = 0;
 		try {
+			
+			Set<Comment> comments = new HashSet<>();
+			// create article 
+			Article article = new Article(title, textContent, category_id, LocalDateTime.now(), 0, isLeading, mediaFiles,comments);
+			// publishArticle(article)
+			long articleId = articleDao.addArticle(article);
+			String original = file.getOriginalFilename();
+			String extension = FilenameUtils.getExtension(original);
+			String url = String.valueOf(articleId).concat(".").concat(extension);
+			File f = new File(WebInitializer.LOCATION + File.separator + url);
+			
+				try {
+					file.transferTo(f);
+					
+				} catch (IllegalStateException | IOException e1) {
+					System.out.println(e1.getMessage());
+					System.out.println("op");
+					return "index";
+				}
+			// UPDATE IN DB
+			System.out.println("url:"+f.getAbsolutePath());
+			Media media = new Media(title, f.getAbsolutePath(), false);//not video
+			mediaFiles.add(media);
+			long mediaId = 0;
 			if(mediaDao.getMediaByName(title)==null){
 				mediaId = mediaDao.addMedia(media);
 			}else{
@@ -84,17 +92,12 @@ public class AdminController {
 				Media exists = mediaDao.getMediaByName(title);
 				mediaId = exists.getMedia_id();
 			}
-			Set<Comment> comments = new HashSet<>();
-			// create article 
-			Article article = new Article(title, textContent, category_id, LocalDateTime.now(), 0, isLeading, mediaFiles,comments);
-			// publishArticle(article)
-			long articleId = articleDao.addArticle(article);
 			mediaDao.addInArticleMedia(articleId, mediaId);
 			System.out.println("after media dao");
 			
 		} catch (SQLException e) {
 			System.out.println("postarticle"+e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+//			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 			return "error";
 		}
 		return "user";
