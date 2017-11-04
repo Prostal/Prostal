@@ -210,6 +210,9 @@
 <body>
 
 	<!-- page header with logo, search, login, user etc.  -->
+	<c:if test="${ requestScope.error != null }">
+			<h3 style="color: red"> ${requestScope.error }</h3>
+	</c:if>
 	<jsp:include page="header.jsp"></jsp:include>
 
 

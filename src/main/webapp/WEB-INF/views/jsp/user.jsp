@@ -17,7 +17,7 @@
 		<c:out value="${user.username }"></c:out>
 		<c:out value="${user.email }"></c:out>
 		<c:if test="${user.avatarUrl!=null }">
-			<img id="avatar" src="getAvatar"  width="50" height= auto>
+			<img id="avatar" src="showAvatar/${user.id}"  width="50" height= auto>
 			<form action="avatarUpload" method="post" enctype="multipart/form-data">
 				<input type="file" name="avatar"><br>
 				<input type="submit" value="change avatar"><br>

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 	<head>
 	<link type="text/css" href="css/main.css" rel="stylesheet">
@@ -18,14 +18,14 @@
 			<h1 style="color: red">Sorry, registration unsuccessfull. Reason: ${requestScope.error }</h1>
 		</c:if>
 		<form action="register" method="post" >
-			Username<input type="text" pattern="[^\s-]" name="username" required="true"><br>
-			Password<input type="password" pattern="[^\s-]" name="password" required="true"><br>
-			Email<input type= "email" pattern="^@[A-Za-z0-9_]{1,15}$" name="email" required="true"><br>
+			Username<input type="text" pattern="[^\s-]" name="username" required><br>
+			Password<input type="password" pattern="[^\s-]" name="password" required><br>
+			Email<input type= "email" pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$" name="email" required><br>
 			<!-- Avatar<input type="file" name="avatar"><br> -->
 			<input type="submit" value="Register"><br>
 		</form> 
 		Already have an account?<a href = "loginPage">Please login here</a>
-		
+		<!-- "^@[A-Za-z0-9_]{1,15}$" -->
 		<jsp:include page="footer.jsp"></jsp:include>
 	</body>
 </html>

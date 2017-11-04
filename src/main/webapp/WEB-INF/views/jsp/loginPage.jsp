@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html >
 <html>
 	<head>
 	<link type="text/css" href="css/main.css" rel="stylesheet">
@@ -15,8 +15,8 @@
 			<h1 style="color: red">Sorry,  ${requestScope.error }</h1>
 		</c:if>
 		<form action="login" method="post">
-			Username <input type="text" name="username" required="true"><br>
-			Password <input type="password" name="password" required="true"><br>
+			Username <input type="text" name="username" required><br>
+			Password <input type="password" name="password" required><br>
 			<input type="submit" value="Log in"><br>
 		</form>
 		

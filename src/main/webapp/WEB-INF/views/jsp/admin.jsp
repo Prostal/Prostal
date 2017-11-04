@@ -13,18 +13,21 @@
 </head>
 <body>
 
+	<c:if test="${ requestScope.error != null }">
+			<h1 style="color: blue"> ${requestScope.error }</h1>
+		</c:if>
 	<form action="addCategory" method="post" >
-		<input type="text" name ="category" placeholder = "category name">
+		<input type="text" name ="category" required placeholder = "category name">
 		<input type="submit" value="post category"><br>
 	</form>
 	<br>
 	
 	<form action="postArticle" method="post" enctype="multipart/form-data">
 	
-		<input type="text" name ="title" placeholder = "title" required="true">
+		<input type="text" name ="title" placeholder = "title" required>
 		<!-- <input type="text" name ="textContent" placeholder = "content"> -->
-		<label for="editor2">Editor 1:</label>
-		<textarea cols="60" id="editor2" name="textContent" rows="4"></textarea>
+		<!-- <label for="editor2">Editor 2:</label> -->
+		<textarea cols="60" id="editor2" name="textContent" rows="4" required></textarea>
 		<script>
               	CKEDITOR.replace( 'editor2' );
        	</script>

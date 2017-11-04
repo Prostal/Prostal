@@ -5,30 +5,21 @@ import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class Category  implements Serializable{
-	
-	
+public class Category implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	private long categoryId;
 	@NotNull
-	@Size(min=2, max=45)
-	private String name; 
-	
+	@Size(min = 3, max = 45)
+	private String name;
 
 	public Category(long category_id, String name) {
 		this(name);
 		this.categoryId = category_id;
 	}
 
-	public Category(String name)  {
-		if(valid(name)) {
-			this.name = name;
-		}
-		//TODO ELSE?
-	}
-
-	private boolean valid(String name) {
-		return name!=null && !name.trim().isEmpty() && name.length() < 45;
+	public Category(String name) {
+		this.name = name;
 	}
 
 	public String getName() {
@@ -41,8 +32,6 @@ public class Category  implements Serializable{
 
 	public void setCategoryId(long category_id) {
 		this.categoryId = category_id;
-	} 
-	
-	
-	
+	}
+
 }
