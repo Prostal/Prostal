@@ -12,16 +12,19 @@
 <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
 </head>
 <body>
-
+	<h1 style="color:#fe850c">ADMIN PANEL</h1>
+	<br>
+	<h3>Добавяне на категория. Моля, въведете наименование:</h3>
 	<form action="addCategory" method="post" >
 		<input type="text" name ="category" placeholder = "category name">
-		<input type="submit" value="post category"><br>
+		<input type="submit" value="post category" class="content_button"><br>
 	</form>
 	<br>
 	
+	<h3>Добавяне статия:</h3>
 	<form action="postArticle" method="post" enctype="multipart/form-data">
 	
-		<input type="text" name ="title" placeholder = "title" required="true">
+		<input type="text" name ="title" placeholder = "title" required="required">
 		<!-- <input type="text" name ="textContent" placeholder = "content"> -->
 		<label for="editor2">Editor 1:</label>
 		<textarea cols="60" id="editor2" name="textContent" rows="4"></textarea>
@@ -35,16 +38,17 @@
 		</select>
 		 
 		<input type="checkbox" name="isLeading" value="true"> Leading <br>
-		<input type="file" name="image" placeholder = "images"><br>
+		<input type="file" name="image" placeholder = "images" class="content_button"><br>
 		
-		<input type="submit" value="post article">
+		<input type="submit" value="post article" class="content_button">
 	</form>
-	
+	<br>
+	<br>
 	<form action="deleteArticle" method="post" >
-	
+		<h3 style="color:red">Изтриване на статия. Моля, въведете име:</h3>
 		<input type="text" name ="title" placeholder = "title">
 		
-		<input type="submit" value="delete article">
+		<input type="submit" value="delete article" class="delete_button">
 	</form>
 </body>
 </html>

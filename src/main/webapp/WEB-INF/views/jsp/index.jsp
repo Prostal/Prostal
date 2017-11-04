@@ -147,14 +147,14 @@
 	font-size: 14px;
 	margin: 5px 0;
 	padding: 0 10px;;
-	color: #42e2e8;
+	color: #fe850c;
 }
 
 #slideshow-main li span.content p {
 	font-size: 11px;
 	margin: 5px 0;
 	padding: 0 10px;;
-	color: #42e2e8;
+	color: #fe850c;
 }
 
 #slideshow-carousel {
@@ -218,7 +218,7 @@
 	</nav>
 
 
-	<div id="right_body"> <!-- all the rest page content between header and footer-->
+	<div id="center_body"> <!-- all the rest page content between header and footer-->
 	
 		<div class="menu-section">
 
@@ -232,7 +232,12 @@
 	
 	</div>
 
+	<div id="right_body">
 	
+		<img src="/Sportal/img/SmokingKills.jpg" width="100%" alt="Пушенето убива!">
+	
+	
+	</div>
 	
 	
 	
