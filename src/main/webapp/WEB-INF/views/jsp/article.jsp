@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib uri="http://ckeditor.com" prefix="ckeditor" %>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page trimDirectiveWhitespaces="true"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib uri="http://ckeditor.com" prefix="ckeditor"%>
 <!DOCTYPE>
 <html>
 <head>
@@ -13,7 +13,7 @@
 
 <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
 <script type="text/javascript">  
-function postComment() {
+function postComment(editor1) {
 	var request = new XMLHttpRequest();
 	var data = CKEDITOR.instances.editor1.getData();
 	var comment = "comment="+data;
@@ -113,90 +113,130 @@ function dislikeComment(commentId) {
 	var response = request.send(path);
 
 }
-</script>  
+</script>
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-		<nav> <!-- side menu at the left page side --> 
-	<jsp:include
-		page="sidemenu.jsp"></jsp:include> </nav>
-	
-		<div id="right_body"> <!-- all the rest page content between header and footer-->
-	<c:set var="article" scope = "page" value="${sessionScope.article}" ></c:set>
-	
-	<div id="article">
-	<h1><c:out value="${article.title }"></c:out></h1> <br>
-	<span>${article.textContent }</span> <br>
-	</div>			
-	<span>Брой преглеждания: </span><c:out value="${article.impressions }"></c:out> <br>
-	<span>Създаден на: </span><c:out value="${article.created }"></c:out> <br>
-	
-	<c:forEach items="${article.mediaFiles}" var="media">
-		<c:if test="${media.isVideo }">
-			<video width="320" height="240"  controls autoplay >
-			  <source src="ShowMedia?mediaId=${media.media_id}" >
-			</video>
-		</c:if>
-		<c:if test="${!media.isVideo }">
-			<img id="media" src="ShowMedia?mediaId=${media.media_id}"  width="320" height= auto><br>
-		</c:if>
-	</c:forEach>
-	<hr>
-<h2>Comments</h2>
-	 <c:if test="${user!=null }">
-	 
-			
-		<label for="editor1">Editor 1:</label>
-		<textarea cols="60" id="editor1" name="editor1" rows="4"></textarea>
-		<script>
+	<nav>
+		<!-- side menu at the left page side -->
+		<jsp:include page="sidemenu.jsp"></jsp:include>
+	</nav>
+
+	<div id="center_body">
+		<!-- all the rest page content between header and footer-->
+		<c:set var="article" scope="page" value="${sessionScope.article}"></c:set>
+
+		<div id="article_title">
+			<c:out value="${article.title }"></c:out>
+		</div>
+		<br>
+		<div id="article_subtext">
+			<span>Създаден на: </span>
+			<c:out value="${article.created }"></c:out>
+			<span> Брой преглеждания: </span>
+			<c:out value="${article.impressions }"></c:out>
+		</div>
+
+		<c:forEach items="${article.mediaFiles}" var="media">
+			<c:if test="${media.isVideo }">
+				<video width="580" height=auto>
+					<source src="ShowMedia?mediaId=${media.media_id}">
+				</video>
+			</c:if>
+			<c:if test="${!media.isVideo }">
+				<img id="media" src="ShowMedia?mediaId=${media.media_id}"
+					width="580" height=auto>
+				<br>
+			</c:if>
+		</c:forEach>
+
+
+
+
+		<br>
+		<div id="article_content">
+			<span>${article.textContent }</span> <br>
+		</div>
+
+
+
+		<hr>
+		<c:if test="${user!=null }">
+
+
+			<label for="editor1">Editor 1:</label>
+			<textarea cols="60" id="editor1" name="editor1" rows="4"></textarea>
+			<script>
               	CKEDITOR.replace( 'editor1' );
        	</script>
-       	<button onclick="postComment()">Submit Comment</button>
-			
-	</c:if>
-	
-	<div id="comment-section">
-	<c:forEach items="${article.comments}" var="comment">
-		<c:set var="comentator" scope = "page" value="${comment.userId}" ></c:set>
-		<table id="commentstable-${comment.commentId}" class="commentstable class">
-			<tr>
-				<td class="avatar-row">
-					<img class="avatar-image" src="showAvatar/${comment.userId}"  width="50" height= auto>
-				</td>
-			</tr>
-			<tr class="comment-content">
-				<td>${comment.content }</td>
-			</tr>
-			<tr>
-				<td>${comment.timeCreated }</td>
-			</tr>
-		</table>
-		<c:if test="${user!=null }">
-			<button style="background-color: green" id="likebutton-${comment.commentId}" onclick="likeComment(commentId=${comment.commentId })">Like ${comment.likes }</button>
-			<button style="background-color: red" id="dislikebutton-${comment.commentId}" onclick="dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
+			<button class="user_button" onclick="postComment(editor1)">Добави
+				коментар</button>
+
 		</c:if>
-		
-		<hr>
-	</c:forEach>
-	</div>
-	<c:if test="${user.admin }">
-		<hr>
-		<h2>Admin panel</h2>
-		<hr>
+
+		<h2>Коментари</h2>
+		<div id="comment-section">
+			<c:forEach items="${article.comments}" var="comment">
+				<c:set var="comentator" scope="page" value="${comment.userId}"></c:set>
+				<table id="commentstable-${comment.commentId}"
+					class="commentstable class">
+					<col width="150">
+					<col width="600">
+					<tr>
+						<td class="avatar-row"><img class="avatar-image"
+							src="showAvatar/${comment.userId}" width="80" height=auto> <br>
+							<span style="font-size:10px">${comment.timeCreated }</span>
+							<!-- name?? -->
+						</td>
+							<td class="comment-content">${comment.content }</td>
+
+				</table>
+				<c:if test="${user!=null }">
+
+					<button class="likeDislike"
+						style="border: 0; background: transparent"
+						id="likebutton-${comment.commentId}"
+						onclick="likeComment(commentId=${comment.commentId})">
+						<img src="/Sportal/img/thumb_up.png" width="40" height="40"
+							alt="Like!" />
+					</button>
+
+					<span style="font-size: 20px">${comment.likes }</span>
+
+					<button class="likeDislike"
+						style="border: 0; background: transparent"
+						id="dislikebutton-${comment.commentId}"
+						onclick="dislikeComment(commentId=${comment.commentId})">
+						<img src="/Sportal/img/thumb_down.png" width="40" height="40"
+							alt="Dislike!" />
+					</button>
+
+					<span style="font-size: 20px">${comment.dislikes }</span>
+
+				</c:if>
+
+				<hr>
+			</c:forEach>
+		</div>
+		<c:if test="${user.admin }">
+			<hr>
+			<h2>Admin panel</h2>
+			<hr>
 			delete article :
-			<a href="deleteArticle?articleId=${article.id }"><button>delete ${article.title } </button></a>
+			<a href="deleteArticle?articleId=${article.id }"><button
+					class="delete_button">delete ${article.title }</button></a>
 			<br>
 			add video :
 			<form action="addVideo" method="post" enctype="multipart/form-data">
-				<input type="text" name="articleId"  value="${article.id }"><br>
-				<input type="file" name="video"><br>
-				<input type="submit" value="add video in ${article.title }"><br>
-			</form> 
+				<input type="text" name="articleId" value="${article.id }"><br>
+				<input type="file" name="video"><br> <input
+					type="submit" value="add video in ${article.title }"><br>
+			</form>
 			<%-- <a href="addArticleMedia?articleId=${article.id }"><button>delete ${article.title } </button></a> --%>
-	</c:if>
+		</c:if>
 
 	</div>
-<jsp:include page="footer.jsp"></jsp:include>
+	<jsp:include page="footer.jsp"></jsp:include>
 
 </body>
 </html>

@@ -14,8 +14,11 @@
 	<hr>
 		
 		<c:set var = "user" value="${sessionScope.user }"></c:set>
-		<c:out value="${user.username }"></c:out>
-		<c:out value="${user.email }"></c:out>
+		<h4 style="display:inline;color:#fe850c">Потребителско име: </h4>
+		<c:out value="${user.username }"></c:out> <br>
+		<h4 style="display:inline;color:#fe850c">Електронна поща: </h4>
+		<c:out value="${user.email }"></c:out><br>
+		<h4 style="display:inline;color:#fe850c">Аватар:</h4>
 		<c:if test="${user.avatarUrl!=null }">
 			<img id="avatar" src="showAvatar/${user.id}"  width="50" height= auto>
 			<form action="avatarUpload" method="post" enctype="multipart/form-data">

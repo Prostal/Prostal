@@ -12,7 +12,7 @@
 	<jsp:include page="header.jsp"></jsp:include>
 	<nav> <!-- side menu at the left page side --> <jsp:include
 		page="sidemenu.jsp"></jsp:include> </nav>
-	<div id="right_body">
+	<div id="center_body">
 		<!-- all the rest page content between header and footer-->
 		<hr>
 		<c:forEach items="${sessionScope.articles}" var="article">

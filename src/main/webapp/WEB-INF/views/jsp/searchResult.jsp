@@ -17,7 +17,7 @@
 	<jsp:include page="sidemenu.jsp"></jsp:include> </nav>
 
 
-	<div id="right_body"> <!-- all the rest page content between header and footer-->
+	<div id="center_body"> <!-- all the rest page content between header and footer-->
    
 
 

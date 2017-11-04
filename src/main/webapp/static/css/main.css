@@ -12,7 +12,7 @@ body {
 }
 
 
-#right_body, nav {
+#center_body, nav, #right_body {
 	float: left;
 	padding: 10px;
 }
@@ -21,15 +21,26 @@ nav {
 	width: 22%;
 	margin-right: 1%;
 	margin: 5px;
+	    height: 100%;
+    position: fixed;
 }
 
 nav a:active {
 	color: white;
 }
 
-#right_body {
-	width: 77%;
+#center_body {
+	width: 54%;
+	margin-right: 1%;
+	margin-bottom: 5%;
+	margin-left: 23%;
 }
+
+#right_body {
+	width: 20%;
+}
+
+
 
 .button_most {
 	background-color: black;
@@ -59,6 +70,40 @@ nav a:active {
 #login_button:hover, #logout_button:hover {
 	background-color: #fe850c;
 	cursor: pointer;
+}
+
+.content_button, .delete_button {
+	background-color: black;
+	color: white;
+}
+
+.content_button:hover {
+	background-color: green;
+	cursor: pointer;
+}
+
+.delete_button:hover {
+	background-color: red;
+	cursor: pointer;
+}
+
+.user_button {
+	background-color: black;
+	color: white;
+}
+
+.user_button:hover {
+	background-color: #fe850c;
+	cursor: pointer;
+}
+
+.likeDislike {
+	
+}
+
+.likeDislike:hover {
+	cursor: pointer;
+	transform: rotate(-20deg);
 }
 
 .side_button {
@@ -111,8 +156,20 @@ nav a:active {
 	box-shadow: 0px -5px 10px 10px #fe850c;
 }
 
-#article {
+#article_title {
+	font-size: 30px;
+		color: #fe850c
+}
+
+#article_subtext {
+	font-size: 15px;
+	font-style: italic;
+
+}
+
+#article_content {
 	font-size: 20px;
+	text-align: justify;
 }
 
 a:link, a:visited {
