@@ -45,12 +45,35 @@ public  class UserDao extends Dao{
 	public boolean existsUser(String username, String password) throws SQLException {
 
 		Connection con = dbManager.getConnection();
-		ResultSet rs=null;
+		ResultSet rs = null;
 		String select = "SELECT count(*) as count FROM users u WHERE u.username = ? AND u.password = ?";
 		
 		try(PreparedStatement ps = con.prepareStatement(select)) {
 			ps.setString(1, username);
 			ps.setString(2, Encrypter.encrypt(new StringBuilder(password).reverse().toString()));
+			rs = ps.executeQuery();
+			rs.next();
+			
+			return rs.getInt("count")>0;
+			
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+		}
+		
+		
+	}
+	
+	public boolean existsUserMail(String username, String mail) throws SQLException {
+
+		Connection con = dbManager.getConnection();
+		ResultSet rs = null;
+		String select = "SELECT count(*) as count FROM users u WHERE u.username = ? OR u.email = ?";
+		
+		try(PreparedStatement ps = con.prepareStatement(select)) {
+			ps.setString(1, username);
+			ps.setString(2, mail);
 			rs = ps.executeQuery();
 			rs.next();
 			

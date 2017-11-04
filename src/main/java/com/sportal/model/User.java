@@ -16,10 +16,10 @@ public class User{
 	private long id;
 	
 	@NotNull
-    @Size(min=2, max=45)
+    @Size(min=1, max=45)
 	private String username;
 	@NotNull
-	@Size(min=2, max=200)
+	@Size(min=1, max=200)
 	private String password;
 	@NotNull
 	@Size(min=2, max=45)

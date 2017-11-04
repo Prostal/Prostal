@@ -33,10 +33,10 @@ public class HomeController {
 
 	@RequestMapping(value = "/index", method=RequestMethod.GET )
 	public String start(HttpSession session, HttpServletRequest request, HttpServletResponse response){
-		//TODO get CASHED FROM DAO CATEGORY
 		
 		Set<Category> categories = new TreeSet<Category>((o1, o2) -> 
-		o1.getName().compareToIgnoreCase(o2.getName()));
+			o1.getName().compareToIgnoreCase(o2.getName()));
+		
 		try {
 			categories.addAll(categoryDao.getAllCategories());
 		} catch (SQLException e) {

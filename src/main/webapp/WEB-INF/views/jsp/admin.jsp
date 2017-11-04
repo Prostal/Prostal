@@ -12,22 +12,30 @@
 <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
 </head>
 <body>
+
+
+	<c:if test="${ requestScope.error != null }">
+			<h1 style="color: blue"> ${requestScope.error }</h1>
+	</c:if>
+
 	<h1 style="color:#fe850c">ADMIN PANEL</h1>
 	<br>
 	<h3>Добавяне на категория. Моля, въведете наименование:</h3>
 	<form action="addCategory" method="post" >
 		<input type="text" name ="category" placeholder = "category name">
 		<input type="submit" value="post category" class="content_button"><br>
+
 	</form>
 	<br>
 	
 	<h3>Добавяне статия:</h3>
 	<form action="postArticle" method="post" enctype="multipart/form-data">
 	
+
 		<input type="text" name ="title" placeholder = "title" required="required">
 		<!-- <input type="text" name ="textContent" placeholder = "content"> -->
-		<label for="editor2">Editor 1:</label>
-		<textarea cols="60" id="editor2" name="textContent" rows="4"></textarea>
+		<!-- <label for="editor2">Editor 2:</label> -->
+		<textarea cols="60" id="editor2" name="textContent" rows="4" required></textarea>
 		<script>
               	CKEDITOR.replace( 'editor2' );
        	</script>

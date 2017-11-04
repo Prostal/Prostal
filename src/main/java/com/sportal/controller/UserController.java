@@ -36,7 +36,7 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(HttpServletRequest request, HttpServletResponse response) {
 		// check for login credentials
-		// TODO SPRING Validation
+
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
@@ -58,7 +58,6 @@ public class UserController {
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 			return "error";
 		}
-		
 
 	}
 
@@ -74,30 +73,52 @@ public class UserController {
 		return "index";
 	}
 
+	// Spring form used
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String register(@ModelAttribute User user, HttpServletRequest request) {
 		// check for register credentials
+		String username = user.getUsername();
+		String mail = user.getEmail();
 
-		// TODO STRONGER PASS
-		
+		// for testers only
+		// if(username.trim().isEmpty()){
+		// return "redirect:https://www.space.com/";
+		// }
+
+		if (!validUsername(username) || !validPassword(user.getPassword()) || !isValidEmailAddress(mail)) {
+			request.setAttribute("error", "form does not meet our requirements");
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			return "registerPage";
+		}
+
 		try {
-			if (!userDao.existsUser(user.getUsername(), user.getPassword())) {
+			if (!userDao.existsUserMail(user.getUsername(), user.getEmail())) {
 				// insert user in db
 				userDao.insertUser(user);
 				// update session
 				request.getSession().setAttribute("user", user);
 				// forward to main html
-
 				return "index";
+			} else {
+				request.setAttribute("error", "username or e-mail has already been used");
+				ResponseEntity.status(HttpStatus.FORBIDDEN);
+				return "registerPage";
+
 			}
 		} catch (SQLException e1) {
-			System.out.println("ne stavash za nashata basa" + e1.getMessage());
+			System.out.println("register Error" + e1.getMessage());
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 			return "error";
 		}
+	}
 
-		return "index";
+	private boolean validPassword(String password) {
 
+		return password != null && !password.trim().isEmpty() && password.length() < 201;
+	}
+
+	private boolean validUsername(String username) {
+		return username != null && !username.trim().isEmpty() && username.length() < 46;
 	}
 
 	@RequestMapping(value = "/userPage", method = RequestMethod.GET)
@@ -106,10 +127,10 @@ public class UserController {
 		// get user from session
 		User user = (User) request.getSession().getAttribute("user");
 		// update user
-		
+
 		try {
 
-			if (user!=null) {
+			if (user != null) {
 				String username = user.getUsername();
 				user = userDao.getUser(username);
 				request.getSession().setAttribute("user", user);
@@ -121,21 +142,22 @@ public class UserController {
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 			return "error";
 		}
-		
+
 		return "index";
 	}
 
 	@RequestMapping(value = "/avatarUpload", method = RequestMethod.POST)
-	public String avatarUpload(@RequestParam("avatar") MultipartFile file, HttpServletRequest req, HttpServletResponse resp){
+	public String avatarUpload(@RequestParam("avatar") MultipartFile file, HttpServletRequest req,
+			HttpServletResponse resp) {
 
 		User user = (User) req.getSession().getAttribute("user");
-		if(user==null){
+		if (user == null) {
 			return "index";
 		}
 		String username = user.getUsername();
-		
+
 		String original = file.getOriginalFilename();
-		String extension = FilenameUtils.getExtension(original);//nice, a
+		String extension = FilenameUtils.getExtension(original);// nice, a
 		String avatar = username.concat(".").concat(extension);
 		File f = new File(WebInitializer.LOCATION + File.separator + avatar);
 		try {
@@ -167,9 +189,8 @@ public class UserController {
 		}
 		File f = new File(WebInitializer.LOCATION + File.separator + avatar);
 
-		
-		try (ServletOutputStream out = response.getOutputStream()){
-			
+		try (ServletOutputStream out = response.getOutputStream()) {
+
 			Files.copy(f.toPath(), out);
 			out.flush();
 			out.close();
@@ -178,13 +199,13 @@ public class UserController {
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 			return "error";
 		}
-		
+
 		return "user";
 	}
-	
+
 	@RequestMapping(value = "/showAvatar/{userId}", method = RequestMethod.GET)
-	public void showMedia(@PathVariable("userId") Long userId, HttpServletRequest request, HttpServletResponse response){
-		
+	public void showMedia(@PathVariable("userId") Long userId, HttpServletRequest request,
+			HttpServletResponse response) {
 
 		User user = null;
 		try {
@@ -194,7 +215,7 @@ public class UserController {
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 			return;
 		}
-		
+
 		String avatar = user.getAvatarUrl();
 		if (avatar == null) {
 			avatar = "default.jpg";
@@ -202,32 +223,30 @@ public class UserController {
 		File f = new File(WebInitializer.LOCATION + File.separator + avatar);
 
 		try {
-			
+
 			Files.copy(f.toPath(), response.getOutputStream());
 			response.getOutputStream().flush();
 		} catch (IOException e) {
 			request.setAttribute("error", "input problem : " + e.getMessage());
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return ;
-		}finally{
+			return;
+		} finally {
 			try {
 				response.getOutputStream().close();
 			} catch (IOException e) {
 				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-				return ;
+				return;
 			}
 		}
-		
+
 	}
 
-	public boolean isValidEmailAddress(String email) {
+	private boolean isValidEmailAddress(String email) {
 		String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
 		java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
 		java.util.regex.Matcher m = p.matcher(email);
 		email.matches(ePattern);
 		return m.matches();
 	}
-	
-	
 
 }

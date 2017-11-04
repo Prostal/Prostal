@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -93,6 +95,12 @@ public class ArticleController {
 		String search = request.getParameter("search");
 
 		if(search==null || search.trim().isEmpty()){
+			request.setAttribute("error", "TIP of the day: there is more info between spaces");
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			return "index";
+		}else if(search.length() < 2){
+			request.setAttribute("error", "Search result: Yes, we have this letter "+search);
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
 			return "index";
 		}
 		
@@ -109,9 +117,10 @@ public class ArticleController {
 				result.retainAll(byCategory);
 			}
 		} catch (SQLException e) {
-			System.out.println("op" + e.getMessage());
+			request.setAttribute("error", "Ops it is not you");
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			return "error500";
 		}
-		// TODO THINK ABOUT LOW SCOPE
 		
 		request.getSession().setAttribute("search", result);
 		return "searchResult";
