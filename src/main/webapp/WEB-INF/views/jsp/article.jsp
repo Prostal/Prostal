@@ -13,7 +13,7 @@
 
 <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
 <script type="text/javascript">  
-function postComment(editor1) {
+function postComment() {
 	var request = new XMLHttpRequest();
 	var data = CKEDITOR.instances.editor1.getData();
 	var comment = "comment="+data;
@@ -24,24 +24,23 @@ function postComment(editor1) {
 			var responseData = JSON.parse(this.response);
 			var username = responseData.username;
 			var time = responseData.commentTime;
-			var commentId = responseData.commentId;
+			var userId = responseData.userId;
 			
-			/* JSON "{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";*/"{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";
-			var table = document.getElementsByClassName("commentstable class")[0].cloneNode(true);
-			//var table = document.getElementById("commentstable-".concat(commentId));
-			alert(table);
+			var table = document.getElementById("commentstable");
+			
 			// Create an empty <tr> element and add it to the 1st position of the table:
 			var row1 = table.insertRow(0);//<tr></tr>
 			var row2 = table.insertRow(1);
 			var row3 = table.insertRow(2);
 			// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
-			var cell1 = row.insertCell(0);//<td></td>
-			var cell2 = row.insertCell(1);
-			var cell3 = row.insertCell(2);
+			var cell1 = row1.insertCell(0);//<td></td>
+			var cell2 = row2.insertCell(0);
+			var cell3 = row3.insertCell(0);
 			// Add some text to the new cells:
+				//<img  src= showAvatar/userId  width="50" height= auto>;
 			cell1.innerHTML = username;
 			cell2.innerHTML = data;
-			cell3.innerHTML = commentTime;
+			cell3.innerHTML = time;
 			//append first child to table of comments with the value
 		}
 		else
@@ -54,7 +53,7 @@ function postComment(editor1) {
 	request.open("post", "comment", true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.send(comment);
-	//debugger;
+	
 	
 }
 
@@ -137,12 +136,9 @@ function dislikeComment(commentId) {
 			<c:out value="${article.impressions }"></c:out>
 		</div>
 
+		<br>
+
 		<c:forEach items="${article.mediaFiles}" var="media">
-			<c:if test="${media.isVideo }">
-				<video width="580" height=auto>
-					<source src="ShowMedia?mediaId=${media.media_id}">
-				</video>
-			</c:if>
 			<c:if test="${!media.isVideo }">
 				<img id="media" src="ShowMedia?mediaId=${media.media_id}"
 					width="580" height=auto>
@@ -150,13 +146,21 @@ function dislikeComment(commentId) {
 			</c:if>
 		</c:forEach>
 
-
-
-
-		<br>
 		<div id="article_content">
 			<span>${article.textContent }</span> <br>
 		</div>
+
+		<c:forEach items="${article.mediaFiles}" var="media">
+			<c:if test="${media.isVideo }">
+				<video width="580" height=auto controls>
+					<source src="ShowMedia?mediaId=${media.media_id}">
+				</video>
+			</c:if>
+		</c:forEach>
+
+
+
+
 
 
 
@@ -184,12 +188,10 @@ function dislikeComment(commentId) {
 					<col width="600">
 					<tr>
 						<td class="avatar-row"><img class="avatar-image"
-							src="showAvatar/${comment.userId}" width="80" height=auto> <br>
-							<span style="font-size:10px">${comment.timeCreated }</span>
-							<!-- name?? -->
-						</td>
-							<td class="comment-content">${comment.content }</td>
-
+							src="showAvatar/${comment.userId}" width="80" height=auto>
+							<br> <span style="font-size: 10px">${comment.timeCreated }</span>
+							<!-- name?? --></td>
+						<td class="comment-content">${comment.content }</td>
 				</table>
 				<c:if test="${user!=null }">
 
@@ -228,9 +230,10 @@ function dislikeComment(commentId) {
 			<br>
 			add video :
 			<form action="addVideo" method="post" enctype="multipart/form-data">
-				<input type="text" name="articleId" value="${article.id }"><br>
-				<input type="file" name="video"><br> <input
-					type="submit" value="add video in ${article.title }"><br>
+				<input type="text" name="articleId" value="${article.id }">
+				<input class="content_button" type="file" name="video"><br>
+				<input class="content_button" type="submit"
+					value="add video in ${article.title }"><br>
 			</form>
 			<%-- <a href="addArticleMedia?articleId=${article.id }"><button>delete ${article.title } </button></a> --%>
 		</c:if>

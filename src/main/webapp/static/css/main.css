@@ -243,6 +243,7 @@ pop up button start -->.box {
 	width: 30%;
 	position: relative;
 	transition: all 5s ease-in-out;
+	z-index: 1000;
 }
 
 .popup h2 {

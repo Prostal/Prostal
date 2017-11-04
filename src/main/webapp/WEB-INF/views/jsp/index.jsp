@@ -130,7 +130,7 @@
 	-moz-opacity: 0.5;
 	-khtml-opacity: 0.5;
 	opacity: 0.5;
-	z-index: 500;
+	z-index: 100;
 }
 
 #slideshow-main li span.content {
@@ -140,7 +140,7 @@
 	display: block;
 	width: 100%;
 	height: 60px;
-	z-index: 1000;
+	z-index: 100;
 }
 
 #slideshow-main li span.content h1 {
@@ -222,9 +222,9 @@
 	
 		<div class="menu-section">
 
-		<a href="Top5?sort=impressions"><button class="button_most">most viewed</button></a> 
-		<a href="Top5?sort=commented"><button class="button_most">most commented</button></a>
-		<a href="Top5?sort=leading"><button class="button_most">leading</button></a>
+		<a href="Top5?sort=impressions"><button class="button_most">НАЙ-ПРЕГЛЕЖДАНИ</button></a> 
+		<a href="Top5?sort=commented"><button class="button_most">НАЙ-КОМЕНТИРАНИ</button></a>
+		<a href="Top5?sort=leading"><button class="button_most">ВОДЕЩИ</button></a>
 		
 		</div>
 		
