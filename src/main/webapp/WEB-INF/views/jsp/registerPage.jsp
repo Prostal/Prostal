@@ -18,9 +18,9 @@
 			<h1 style="color: red">Sorry, registration unsuccessfull. Reason: ${requestScope.error }</h1>
 		</c:if>
 		<form action="register" method="post" >
-			Username<input type="text" pattern="[^\s-]" name="username" required><br>
-			Password<input type="password" pattern="[^\s-]" name="password" required><br>
-			Email<input type= "email" pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$" name="email" required><br>
+			Username<input type="text" name="username" required><br>
+			Password<input type="password" name="password" required><br>
+			Email<input type= "email" name="email" required><br>
 			<!-- Avatar<input type="file" name="avatar"><br> -->
 			<input type="submit" value="Register"><br>
 		</form> 
