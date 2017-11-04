@@ -41,10 +41,12 @@ public class CommentService {
 		long userId = user.getId();
 		Article article = (Article) req.getSession().getAttribute("article");
 		long articleId = article.getId();
-		//req.setCharacterEncoding("UTF-8");
-		String content = req.getParameter("comment");
+		String content = req.getParameter("comment").trim();
 		
-		//String result = URLDecoder.decode(content, "UTF-8");
+		if(content==null || content.isEmpty() || content.equals("<p>")){
+			resp.setStatus(402);
+			return;
+		}
 		
 		Comment comment = new Comment(userId, articleId, content, 0, 0, LocalDateTime.now(), true, new HashSet<>());
 	

@@ -46,16 +46,7 @@ public class ArticleController {
 		// TODO THINK ABOUT SCOPE AGAIN
 		request.getSession().setAttribute("article", article);
 		return "article";
-		// BELOW offers list with links to the last few (3) articles related to
-		// the article tags
-		// AT RIGHT offers a column with the last articles belonging to the sub
-		// category
-		// list comments related to the article
-		// show buttons to sort comments by (1: Date/Time DESC; 2: Date/Time
-		// ASC; 3: Most liked DESC; 4: Most disliked DESC; 5: Absolute rating
-		// (Likes-Dislikes))
-		// shows number of previews(impressions)
-		// FB comment plug in??
+		
 	}
 
 	@RequestMapping(value = "/deleteArticle", method = RequestMethod.GET)

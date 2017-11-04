@@ -38,9 +38,9 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
  
     public static final String LOCATION = "C:"+File.separator+"uploads"; // Temporary location where files will be stored
  
-    private static final long MAX_FILE_SIZE = 5242880; // 5MB : Max file size.
+    public static final long MAX_FILE_SIZE = 52_428_80; // 5MB : Max file size.
                                                         // Beyond that size spring will throw exception.
-    private static final long MAX_REQUEST_SIZE = 20971520; // 20MB : Total request size containing Multi part.
+    public static final long MAX_REQUEST_SIZE = 20_971_520; // 20MB : Total request size containing Multi part.
      
     private static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk
 }

@@ -104,25 +104,37 @@ public class AdminController {
 		
 	}
 	
+	enum SupportedFormat {MP4, OGG, WEBM};
 	@RequestMapping(value = "/addVideo", method = RequestMethod.POST)
 	public String addArticleMedia(@RequestParam("video") MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
 		//collect data from request
-	
+		//TODO Global Exeption handler
+		if(file.getSize()>WebInitializer.MAX_REQUEST_SIZE){
+			request.setAttribute("error", "this file exceeds the max. file size");
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			return "user";
+		}
 		long articleId  = Long.parseLong(request.getParameter("articleId"));
 		Article article = null;
 		try {
 			article = articleDao.getArtticleById(articleId);
 		} catch (SQLException e2) {
-			// TODO Auto-generated catch block
-			System.out.println("op");
+			System.out.println("add video"+e2.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return "error500";
 		}
 		String title = article.getTitle();
 		
-
-		String mod = article.getMediaFiles().size()+"sportal";//next num
+		String newname = articleId+"articleId"+article.getMediaFiles().size();//next num
 		String original = file.getOriginalFilename();
 		String extension = FilenameUtils.getExtension(original);
-		String url = title.concat(mod).concat(".").concat(extension);
+		
+		if(!supportedFormat(extension)){
+			request.setAttribute("error", "not supported format "+extension);
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			return "user";
+		}
+		String url = newname.concat(".").concat(extension);
 		File f = new File(WebInitializer.LOCATION + File.separator + url);
 		
 			try {
@@ -131,7 +143,7 @@ public class AdminController {
 			} catch (IllegalStateException | IOException e1) {
 				System.out.println("admin"+e1.getMessage());
 				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-				return "error";
+				return "error500";
 			}
 			
 		// UPDATE IN DB
@@ -142,15 +154,21 @@ public class AdminController {
 			mediaId = mediaDao.addMedia(media);
 			mediaDao.addInArticleMedia(articleId, mediaId);
 		} catch (SQLException e) {
-			System.out.println("op");
+			System.out.println("admin"+e.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return "error500";
 		}
-		
-		
-		System.out.println("after addmedia dao");
-			
-		
 		return "index";
-		
+	}
+	
+	private boolean supportedFormat(String extension) {
+		for (SupportedFormat format : SupportedFormat.values()) {
+			System.out.println(format+" "+extension);
+			if(format.toString().equalsIgnoreCase(extension)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	

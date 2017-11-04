@@ -13,7 +13,7 @@
 
 <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
 <script type="text/javascript">  
-function postComment(editor1) {
+function postComment() {
 	var request = new XMLHttpRequest();
 	var data = CKEDITOR.instances.editor1.getData();
 	var comment = "comment="+data;
@@ -24,40 +24,42 @@ function postComment(editor1) {
 			var responseData = JSON.parse(this.response);
 			var username = responseData.username;
 			var time = responseData.commentTime;
-			var commentId = responseData.commentId;
+			var userId = responseData.userId;
 			
-			/* JSON "{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";*/"{\"username\": "+user.getUsername()+", \"commentId\": "+comment.getCommentId()+", \"commentTime\": "+comment.getTimeCreated().toString()+"}";
-			var table = document.getElementsByClassName("commentstable class")[0].cloneNode(true);
-			//var table = document.getElementById("commentstable-".concat(commentId));
-			alert(table);
+			var table = document.getElementById("commentstable");
+			
 			// Create an empty <tr> element and add it to the 1st position of the table:
 			var row1 = table.insertRow(0);//<tr></tr>
 			var row2 = table.insertRow(1);
 			var row3 = table.insertRow(2);
 			// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
-			var cell1 = row.insertCell(0);//<td></td>
-			var cell2 = row.insertCell(1);
-			var cell3 = row.insertCell(2);
+			var cell1 = row1.insertCell(0);//<td></td>
+			var cell2 = row2.insertCell(0);
+			var cell3 = row3.insertCell(0);
 			// Add some text to the new cells:
+				//<img  src= showAvatar/userId  width="50" height= auto>;
 			cell1.innerHTML = username;
 			cell2.innerHTML = data;
-			cell3.innerHTML = commentTime;
+			cell3.innerHTML = time;
 			//append first child to table of comments with the value
 		}
 		else
 		if (this.readyState == 4 && this.status == 401) {
 			alert("Sorry, you must log in to post a comment");
 		}
+		else
+			if (this.readyState == 4 && this.status == 402) {
+				alert("Yoda: Some text write... a comment to post... you must");
+			}
 			
 	}
 	
 	request.open("post", "comment", true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.send(comment);
-	//debugger;
+	
 	
 }
-
 
 function likeComment(commentId) {
 	var request = new XMLHttpRequest();
@@ -175,48 +177,31 @@ function dislikeComment(commentId) {
 		</c:if>
 
 		<h2>Коментари</h2>
-		<div id="comment-section">
+		<div id="comment-section" >
+			<table id="commentstable" width="600" >
 			<c:forEach items="${article.comments}" var="comment">
-				<c:set var="comentator" scope="page" value="${comment.userId}"></c:set>
-				<table id="commentstable-${comment.commentId}"
-					class="commentstable class">
-					<col width="150">
-					<col width="600">
-					<tr>
-						<td class="avatar-row"><img class="avatar-image"
-							src="showAvatar/${comment.userId}" width="80" height=auto> <br>
-							<span style="font-size:10px">${comment.timeCreated }</span>
-							<!-- name?? -->
-						</td>
-							<td class="comment-content">${comment.content }</td>
-
-				</table>
-				<c:if test="${user!=null }">
-
-					<button class="likeDislike"
-						style="border: 0; background: transparent"
-						id="likebutton-${comment.commentId}"
-						onclick="likeComment(commentId=${comment.commentId})">
-						<img src="/Sportal/img/thumb_up.png" width="40" height="40"
-							alt="Like!" />
-					</button>
-
-					<span style="font-size: 20px">${comment.likes }</span>
-
-					<button class="likeDislike"
-						style="border: 0; background: transparent"
-						id="dislikebutton-${comment.commentId}"
-						onclick="dislikeComment(commentId=${comment.commentId})">
-						<img src="/Sportal/img/thumb_down.png" width="40" height="40"
-							alt="Dislike!" />
-					</button>
-
-					<span style="font-size: 20px">${comment.dislikes }</span>
-
-				</c:if>
-
-				<hr>
+				<tr>
+					<td class="avatar-row">
+						<img class="avatar-image" src="showAvatar/${comment.userId}"  width="50" height= auto>
+					</td>
+				</tr>
+				<tr class="comment-row">
+					<td>${comment.content }</td>
+				</tr>
+				<tr class="timeCreated-row">
+					<td>${comment.timeCreated }</td>
+				</tr>
+				<tr>
+					<td>
+						<button style="background-color: green" id="likebutton-${comment.commentId}" onclick="likeComment(commentId=${comment.commentId })">Like ${comment.likes }</button>
+						<button style="background-color: red" id="dislikebutton-${comment.commentId}" onclick="dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
+					</td>
+				</tr>
+				
 			</c:forEach>
+			
+		</table>
+				<hr>
 		</div>
 		<c:if test="${user.admin }">
 			<hr>
@@ -228,7 +213,7 @@ function dislikeComment(commentId) {
 			<br>
 			add video :
 			<form action="addVideo" method="post" enctype="multipart/form-data">
-				<input type="text" name="articleId" value="${article.id }"><br>
+				<input type="text" name="articleId" value="${article.id }" hidden><br>
 				<input type="file" name="video"><br> <input
 					type="submit" value="add video in ${article.title }"><br>
 			</form>
