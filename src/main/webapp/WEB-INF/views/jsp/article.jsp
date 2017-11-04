@@ -4,7 +4,7 @@
 <%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://ckeditor.com" prefix="ckeditor"%>
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
 <head>
 <link type="text/css" href="css/main.css" rel="stylesheet">
@@ -139,12 +139,9 @@ function dislikeComment(commentId) {
 			<c:out value="${article.impressions }"></c:out>
 		</div>
 
+		<br>
+
 		<c:forEach items="${article.mediaFiles}" var="media">
-			<c:if test="${media.isVideo }">
-				<video width="580" height=auto>
-					<source src="ShowMedia?mediaId=${media.media_id}">
-				</video>
-			</c:if>
 			<c:if test="${!media.isVideo }">
 				<img id="media" src="ShowMedia?mediaId=${media.media_id}"
 					width="580" height=auto>
@@ -152,13 +149,21 @@ function dislikeComment(commentId) {
 			</c:if>
 		</c:forEach>
 
-
-
-
-		<br>
 		<div id="article_content">
 			<span>${article.textContent }</span> <br>
 		</div>
+
+		<c:forEach items="${article.mediaFiles}" var="media">
+			<c:if test="${media.isVideo }">
+				<video width="580" height=auto controls>
+					<source src="ShowMedia?mediaId=${media.media_id}">
+				</video>
+			</c:if>
+		</c:forEach>
+
+
+
+
 
 
 
@@ -197,7 +202,6 @@ function dislikeComment(commentId) {
 						<button style="background-color: red" id="dislikebutton-${comment.commentId}" onclick="dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
 					</td>
 				</tr>
-				
 			</c:forEach>
 			
 		</table>
@@ -213,9 +217,11 @@ function dislikeComment(commentId) {
 			<br>
 			add video :
 			<form action="addVideo" method="post" enctype="multipart/form-data">
+
 				<input type="text" name="articleId" value="${article.id }" hidden><br>
 				<input type="file" name="video"><br> <input
 					type="submit" value="add video in ${article.title }"><br>
+
 			</form>
 			<%-- <a href="addArticleMedia?articleId=${article.id }"><button>delete ${article.title } </button></a> --%>
 		</c:if>
