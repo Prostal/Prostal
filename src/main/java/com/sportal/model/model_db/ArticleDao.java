@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -182,7 +181,7 @@ public  class ArticleDao extends Dao{
 			}
 		}
 		
-		public void incremenImpression(long articleId) throws SQLException {
+		public void incrementImpression(long articleId) throws SQLException {
 			
 			Connection con  = dbManager.getConnection();
 			String update = "UPDATE articles as a SET a.impressions=a.impressions+1  WHERE a.article_id=?";

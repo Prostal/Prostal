@@ -26,21 +26,25 @@ function postComment() {
 			var time = responseData.commentTime;
 			var userId = responseData.userId;
 			
+			
 			var table = document.getElementById("commentstable");
 			
 			// Create an empty <tr> element and add it to the 1st position of the table:
 			var row1 = table.insertRow(0);//<tr></tr>
 			var row2 = table.insertRow(1);
 			var row3 = table.insertRow(2);
+			//var row4 = table.insertRow(3);
 			// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
 			var cell1 = row1.insertCell(0);//<td></td>
 			var cell2 = row2.insertCell(0);
 			var cell3 = row3.insertCell(0);
+			//var cell4 = row4.insertCell(0);
 			// Add some text to the new cells:
 
 			cell1.innerHTML = username;
 			cell2.innerHTML = data;
 			cell3.innerHTML = time;
+			//cell4.innerHTML =<img src="showAvatar/${userId}"  width="50" height= auto>;
 			//append first child to table of comments with the value
 		}
 		else
@@ -48,8 +52,8 @@ function postComment() {
 			alert("Sorry, you must log in to post a comment");
 		}
 		else
-			if (this.readyState == 4 && this.status == 402) {
-				alert("Yoda: Some text write... a comment to post... you must");
+			if (this.readyState == 4 && this.status == 417) {
+				alert("Yoda: Some text write... a comment to post... you must!");
 			}
 			
 	}
@@ -77,7 +81,7 @@ function likeComment(commentId) {
 		else if (this.readyState == 4 && this.status == 401) {
 			alert("Sorry, you must log in to like this comment!");
 		}
-		else if (this.readyState == 4 && this.status == 402) {
+		else if (this.readyState == 4 && this.status == 403) {
 				alert("Sorry, you have voted already!");
 		}
 			
@@ -105,7 +109,7 @@ function dislikeComment(commentId) {
 		else if (this.readyState == 4 && this.status == 401) {
 			alert("Sorry, you must log in to dislike this comment!");
 		}
-		else if (this.readyState == 4 && this.status == 402) {
+		else if (this.readyState == 4 && this.status == 403) {
 				alert("Sorry, you have voted already!");
 		}
 			

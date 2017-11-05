@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +31,8 @@ public class UserController {
 	@Autowired
 	private UserDao userDao;
 
+	private final String SUPPORTED_IMAGE_FORMAT = "image/jpeg";// static not needed
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(HttpServletRequest request, HttpServletResponse response) {
 		// check for login credentials
@@ -49,14 +49,14 @@ public class UserController {
 				request.getSession().setAttribute("user", user);
 				return "index";
 			} else {
-				// forgot pass?
+
 				request.setAttribute("error", "user does not exist");
 				return "loginPage";
 			}
 		} catch (SQLException e) {
 			request.setAttribute("error", "database problem : " + e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
+			response.setStatus(500);
+			return "error500";
 		}
 
 	}
@@ -75,7 +75,7 @@ public class UserController {
 
 	// Spring form used
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String register(@ModelAttribute User user, HttpServletRequest request) {
+	public String register(@ModelAttribute User user, HttpServletRequest request,HttpServletResponse resp) {
 		// check for register credentials
 		String username = user.getUsername();
 		String mail = user.getEmail();
@@ -87,7 +87,7 @@ public class UserController {
 
 		if (!validUsername(username) || !validPassword(user.getPassword()) || !isValidEmailAddress(mail)) {
 			request.setAttribute("error", "form does not meet our requirements");
-			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			resp.setStatus(403);
 			return "registerPage";
 		}
 
@@ -101,14 +101,14 @@ public class UserController {
 				return "index";
 			} else {
 				request.setAttribute("error", "username or e-mail has already been used");
-				ResponseEntity.status(HttpStatus.FORBIDDEN);
+				resp.setStatus(403);
 				return "registerPage";
 
 			}
 		} catch (SQLException e1) {
-			System.out.println("register Error" + e1.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
+			request.setAttribute("error", "DB problem " + e1.getMessage());
+			resp.setStatus(500);
+			return "error500";
 		}
 	}
 
@@ -126,13 +126,15 @@ public class UserController {
 				user = userDao.getUser(username);
 				request.getSession().setAttribute("user", user);
 				return "user";
-			}else{
+			} else {
+				request.setAttribute("error", "Log in first ");
+				response.setStatus(401);
 				return "loginPage";
 			}
 
 		} catch (SQLException e) {
 			request.setAttribute("error", "database problem : " + e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(500);
 			return "error500";
 		}
 
@@ -145,25 +147,24 @@ public class UserController {
 		User user = (User) req.getSession().getAttribute("user");
 		if (user == null) {
 			req.setAttribute("error", "Log in first ");
-			ResponseEntity.status(HttpStatus.UNAUTHORIZED);
+			resp.setStatus(401);
 			return "index";
 		}
 
-		String supportedType = "image/jpeg";
 		String original = file.getOriginalFilename();
 		Tika tika = new Tika();
 		try {
 			String filetype = tika.detect(file.getBytes());
 
-			if (!filetype.equals(supportedType)) {
+			if (!filetype.equals(SUPPORTED_IMAGE_FORMAT)) {
 				req.setAttribute("error", "this file format is not supported");
-				ResponseEntity.status(HttpStatus.FORBIDDEN);
+				resp.setStatus(403);
 				return "user";
 			}
 		} catch (IOException e) {
 			req.setAttribute("error", "IO problem" + e.getCause().getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "user";
+			resp.setStatus(500);
+			return "error500";
 		}
 		String extension = FilenameUtils.getExtension(original);
 
@@ -173,7 +174,7 @@ public class UserController {
 			file.transferTo(f);
 		} catch (IllegalStateException | IOException e1) {
 			req.setAttribute("error", "IO problem : " + e1.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			resp.setStatus(500);
 			return "error500";
 		}
 		// UPDATE IN DB
@@ -182,7 +183,7 @@ public class UserController {
 			user.setAvatarUrl(avatar);
 		} catch (SQLException e) {
 			req.setAttribute("error", "database problem : " + e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			resp.setStatus(500);
 			return "error500";
 		}
 
@@ -198,7 +199,7 @@ public class UserController {
 			user = userDao.getUserById(userId);
 		} catch (SQLException e1) {
 			request.setAttribute("error", "database problem : " + e1.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(500);
 			return;
 		}
 
@@ -214,17 +215,16 @@ public class UserController {
 			response.getOutputStream().flush();
 		} catch (IOException e) {
 			request.setAttribute("error", "input problem : " + e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(500);
 			return;
 		} finally {
 			try {
 				response.getOutputStream().close();
 			} catch (IOException e) {
-				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				response.setStatus(500);
 				return;
 			}
 		}
-
 	}
 
 	private boolean validPassword(String password) {

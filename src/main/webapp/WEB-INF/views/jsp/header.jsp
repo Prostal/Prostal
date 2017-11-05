@@ -14,11 +14,7 @@
 		This is the ex-"USER" button. -->
 		<div style="font-size:20px">
 		Welcome, <a href="userPage"><c:out value="${sessionScope.user.username }">Guest</c:out></a>
-<<<<<<< HEAD
-=======
-		
-		
->>>>>>> 110e8e471eb8de2862bd4e6bef6b9b82fe6c77cf
+
 		</div>
 
 		<c:if test="${ sessionScope.user==null }">

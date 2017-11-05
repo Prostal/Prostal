@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,29 +32,28 @@ public class LikeService {
 	@ResponseBody
 	public void likeComment(HttpServletRequest req, HttpServletResponse resp){
 		
-		//System.out.println("commentId "+req.getParameter("commentId"));
 		long commentId = Long.parseLong(req.getParameter("commentId"));
-		//vote(req, resp,commentId);
-		//test only
 
 		//check if logged
 		User user = (User) req.getSession().getAttribute("user");
 		if(user==null){
-			resp.setStatus(401);
+			resp.setStatus(401);//Unauthorized
 			return;
 		}
 		//check if voted
 		try {
 			if(voteDao.hasVotedForComment(user.getId(), commentId)){
-				resp.setStatus(402);
+				resp.setStatus(403);// Forbidden
 				return;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			resp.setStatus(500);
+			return;
 		}
-		// add vote in db
+		
 		Vote vote = new Vote(commentId, user.getId());
+		// add vote in db
+		
 		long likesCount = 0;
 		try {
 			voteDao.insertVote(vote);
@@ -62,43 +62,37 @@ public class LikeService {
 			likesCount = c.getLikes();
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			resp.setStatus(500);
+			return;
 		}
 		
 		resp.setStatus(200);
-		String responseJsonString = "{\"likesCount\": "+likesCount+", \"commentId\": "+commentId+"}";
+		JSONObject jObj = new JSONObject();
+		jObj.put("likesCount", likesCount);
+		jObj.put("commentId", commentId);
+		
 		resp.setContentType("application/json");
 		try {
-			resp.getWriter().write(responseJsonString);
+			resp.getWriter().write(jObj.toString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			resp.setStatus(500);
+			return;
 		}finally {
-			
 			try {
 				resp.getWriter().flush();
 				resp.getWriter().close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				resp.setStatus(500);
+				return;
 			}
 		}
-			
-		
 	}
-	
 	
 	@RequestMapping(value="/dislike", method=RequestMethod.POST)
 	@ResponseBody
 	public void dislikeComment(HttpServletRequest req, HttpServletResponse resp){
 		
 		long commentId = Long.parseLong(req.getParameter("commentId"));
-		
-//TODO FIX REPATED CODE
-		
-		//vote(req, resp,commentId);
-		//test only
 
 		//check if logged
 		User user = (User) req.getSession().getAttribute("user");
@@ -109,12 +103,11 @@ public class LikeService {
 		//check if voted
 		try {
 			if(voteDao.hasVotedForComment(user.getId(), commentId)){
-				resp.setStatus(402);
+				resp.setStatus(403);
 				return;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			resp.setStatus(500);
 		}
 		// add vote in db
 		Vote vote = new Vote(commentId, user.getId());
@@ -126,26 +119,29 @@ public class LikeService {
 			dislikesCount = c.getDislikes();
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			resp.setStatus(500);
+			return;
 		}
 		
 		resp.setStatus(200);
-		String responseJsonString = "{\"dislikesCount\": "+dislikesCount+", \"commentId\": "+commentId+"}";
+		JSONObject jObj = new JSONObject();
+		jObj.put("dislikesCount", dislikesCount);
+		jObj.put("commentId", commentId);
+		
 		resp.setContentType("application/json");
 		try {
-			resp.getWriter().write(responseJsonString);
+			resp.getWriter().write(jObj.toString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			resp.setStatus(500);
+			return;
 		}finally {
 			
 			try {
 				resp.getWriter().flush();
 				resp.getWriter().close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				resp.setStatus(500);
+				return;
 			}
 		}
 	}

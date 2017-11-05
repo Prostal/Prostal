@@ -2,17 +2,13 @@ package com.sportal.controller;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +25,7 @@ public class ArticleController {
 
 	@Autowired
 	private ArticleDao articleDao;
-	
+
 	@Autowired
 	private UserDao userDao;
 
@@ -37,7 +33,7 @@ public class ArticleController {
 	private CategoryDao categoryDao;
 
 	@RequestMapping(value = "/pickArticle", method = RequestMethod.GET)
-	public String getArticle(ModelMap map ,HttpServletRequest request, HttpServletResponse response) {
+	public String getArticle(ModelMap map, HttpServletRequest request, HttpServletResponse response) {
 		// review article content and all the media related to the article
 
 		long articleId = Long.parseLong(request.getParameter("articleId"));
@@ -49,34 +45,33 @@ public class ArticleController {
 			HashMap<Long, String> mapp = new HashMap<>();
 			for (User user : commentators) {
 				mapp.put(user.getId(), user.getUsername());
-				
+
 			}
 			map.addAttribute("commentators", mapp);
 			// increment immpressions
-			articleDao.incremenImpression(articleId);
+			articleDao.incrementImpression(articleId);
 		} catch (SQLException e) {
-			request.setAttribute("error", "DB problem "+e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			request.setAttribute("error", "DB problem " + e.getMessage());
+			response.setStatus(500);
 			return "index500";
 		}
-		
+
 		request.getSession().setAttribute("article", article);
 		return "article";
-		
+
 	}
 
 	@RequestMapping(value = "/deleteArticle", method = RequestMethod.GET)
 	public String deleteArticle(HttpServletRequest request, HttpServletResponse response) {
 		long articleId = Long.parseLong(request.getParameter("articleId"));
-		System.out.println("delete articleId:" + articleId);
 		try {
 			articleDao.removeArticle(articleId);
 		} catch (SQLException e) {
-			request.setAttribute("error", "DB problem"+e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			request.setAttribute("error", "DB problem" + e.getMessage());
+			response.setStatus(500);
 			return "index500";
 		}
-		return "index";
+		return "user";
 	}
 
 	@RequestMapping(value = "/categoryArticles", method = RequestMethod.GET)
@@ -85,19 +80,19 @@ public class ArticleController {
 		long categoryId = Long.parseLong(request.getParameter("category"));
 
 		if (categoryId > 0) {
-			
+
 			try {
 				request.getSession().setAttribute("articles", articleDao.getArtticlesByCategory(categoryId));
 				request.setAttribute("category", categoryDao.getCategoryById(categoryId));
 
 			} catch (SQLException e) {
-				request.setAttribute("error", "DB problem"+e.getMessage());
-				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				request.setAttribute("error", "DB problem" + e.getMessage());
+				response.setStatus(500);
 				return "index500";
 			}
-		}else{
+		} else {
 			request.setAttribute("error", "no such category");
-			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			response.setStatus(403);
 			return "index";
 		}
 		// reveals submenu with all the subcategories belonging to the category
@@ -108,37 +103,35 @@ public class ArticleController {
 	public String search(HttpServletRequest request, HttpServletResponse response) {
 		String search = request.getParameter("search");
 
-		if(search==null || search.trim().isEmpty()){
+		if (search == null || search.trim().isEmpty()) {
 			request.setAttribute("error", "TIP of the day: there is more info between spaces");
-			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			response.setStatus(403);
 			return "index";
-		}else if(search.length() < 2){
-			request.setAttribute("error", "Search result: Yes, we have this letter "+search);
-			ResponseEntity.status(HttpStatus.FORBIDDEN);
+		} else if (search.length() < 2) {
+			request.setAttribute("error", "Search result: Yes, we have this letter " + search);
+			response.setStatus(403);
 			return "index";
 		}
-		
-		String category = request.getParameter("category");
-		
+
 		String checkbox = request.getParameter("checkbox");
-		Set<Article> result = new HashSet<>();
+		Set<Article> result = new LinkedHashSet<>();
 
 		try {
 			result.addAll(articleDao.getArtticlesByTitle(search));
 			if (checkbox != null) {
-				long categoryId = Long.parseLong(category);
+				long categoryId = Long.parseLong(request.getParameter("category"));
 				Set<Article> byCategory = articleDao.getArtticlesByCategory(categoryId);
 				result.retainAll(byCategory);
 			}
 		} catch (SQLException e) {
 			request.setAttribute("error", "Ops it is not you");
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(500);
 			return "error500";
 		}
-		if(result.isEmpty()){
-			request.setAttribute("error", "no matches were found for the specified query:  "+search);
+		if (result.isEmpty()) {
+			request.setAttribute("error", "no matches were found for the specified query:  " + search);
 		}
-		
+
 		request.getSession().setAttribute("search", result);
 		return "searchResult";
 	}
@@ -148,41 +141,24 @@ public class ArticleController {
 		// list top 5 articles on selected condition
 		String sort = request.getParameter("sort");
 
-		switch (sort) {
-		case "impressions":
-			try {
+		try {
+			switch (sort) {
+			case "impressions":
 				request.setAttribute("articles", articleDao.getTop5ByImpressions());
-
-			} catch (SQLException e) {
-				request.setAttribute("error", "DB problem"+e.getMessage());
-				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-				return "index500";
-			}
-			break;
-		case "leading":
-			try {
-				
+				break;
+			case "leading":
 				request.setAttribute("articles", articleDao.getTop5Leading());
-
-			} catch (SQLException e) {
-				request.setAttribute("error", "DB problem"+e.getMessage());
-				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-				return "index500";
-			}
-			break;
-		case "commented":
-			try {
-				
+				break;
+			case "commented":
 				request.setAttribute("articles", articleDao.getTop5ByComments());
-			} catch (SQLException e) {
-				request.setAttribute("error", "DB problem"+e.getMessage());
-				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-				return "index500";
+				break;
+			default:
+				break;
 			}
-			break;
-
-		default:
-			break;
+		} catch (SQLException e) {
+			request.setAttribute("error", "DB problem" + e.getMessage());
+			response.setStatus(500);
+			return "index500";
 		}
 
 		// reveals submenu with all the subcategories belonging to the category

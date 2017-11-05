@@ -3,7 +3,6 @@ package com.sportal.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -51,11 +50,6 @@ public class Article implements Serializable{
 		this.comments = comments;
 	}
 
-
-
-
-
-	// TODO ADD MEDIA
 	
 	public long getCategory_id() {
 		return category_id;

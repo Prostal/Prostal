@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +31,7 @@ public class HomeController {
 
 	@RequestMapping(value = "/index", method=RequestMethod.GET )
 	public String start(HttpSession session, HttpServletRequest request, HttpServletResponse response){
-		
+		System.out.println("OOOOP");
 		Set<Category> categories = new TreeSet<Category>((o1, o2) -> 
 			o1.getName().compareToIgnoreCase(o2.getName()));
 		
@@ -41,7 +39,7 @@ public class HomeController {
 			categories.addAll(categoryDao.getAllCategories());
 		} catch (SQLException e) {
 			request.setAttribute("error", "database problem : " + e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(500);
 			return "error";
 		}
 		request.getServletContext().setAttribute("categories", categories);
@@ -51,7 +49,7 @@ public class HomeController {
 			leadingDao = articleDao.getTop5Leading();
 		} catch (SQLException e) {
 			request.setAttribute("error", "database problem : " + e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(500);
 			return "error";
 		}
 		request.getSession().setAttribute("leading", leadingDao);

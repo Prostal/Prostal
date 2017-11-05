@@ -8,9 +8,8 @@ import java.util.HashSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,7 +43,7 @@ public class CommentService {
 		String content = req.getParameter("comment").trim();
 		
 		if(content==null || content.isEmpty() || content.equals("<p>")){
-			resp.setStatus(402);
+			resp.setStatus(417);
 			return;
 		}
 		
@@ -54,27 +53,31 @@ public class CommentService {
 			//insert new comment related to the article where the user is
 			comment = commentDao.addComment(comment);
 		} catch (SQLException e) {
-			System.out.println("commentService"+e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			resp.setStatus(500);
+			return;
 			
 		}
-		
+		//Pack data
+		JSONObject jObj = new JSONObject();
+		jObj.put("username", user.getUsername());
+		jObj.put("userId", userId);
+		jObj.put("commentTime", comment.getTimeCreated().toString());
 		//refresh article comments and forward to the article URL
-		String responseJsonString = "{\"username\": \""+user.getUsername()+"\", \"userId\": "+userId+", \"commentTime\": \""+comment.getTimeCreated().toString()+"\"}";
+		
 		resp.setContentType("application/json");
 		try {
-			resp.getWriter().write(responseJsonString);
+			resp.getWriter().write(jObj.toString());
 		} catch (IOException e) {
-			System.out.println("postarticle"+e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			resp.setStatus(500);
+			return;
 			
 		}finally{
 			try {
 				resp.getWriter().flush();
 				resp.getWriter().close();
 			} catch (IOException e) {
-				System.out.println("postarticle"+e.getMessage());
-				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				resp.setStatus(500);
+				return;
 				
 			}
 		}
