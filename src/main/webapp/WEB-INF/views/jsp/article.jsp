@@ -187,15 +187,15 @@ function dislikeComment(commentId) {
 					
 				</tr>
 				<tr class="comment-row">
-					<td>${comment.content }</td>
+					<td style="font-size:20px;">${comment.content }</td>
 				</tr>
 				<tr class="timeCreated-row">
 					<td>${comment.timeCreated }</td>
 				</tr>
 				<tr>
 					<td>
-						<button style="background-color: green" id="likebutton-${comment.commentId}" onclick="likeComment(commentId=${comment.commentId })">Like ${comment.likes }</button>
-						<button style="background-color: red" id="dislikebutton-${comment.commentId}" onclick="dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
+						<button style="background-color: green" class="likeDislike" id="likebutton-${comment.commentId}" onclick="likeComment(commentId=${comment.commentId })">Like ${comment.likes }</button>
+						<button style="background-color: red" class="likeDislike" id="dislikebutton-${comment.commentId}" onclick="dislikeComment(commentId=${comment.commentId })">Dislike ${comment.dislikes }</button>	
 					</td>
 				</tr>
 			</c:forEach>
@@ -205,18 +205,18 @@ function dislikeComment(commentId) {
 		</div>
 		<c:if test="${user.admin }">
 			<hr>
-			<h2>Admin panel</h2>
+			<h2>ADMIN PANEL</h2>
 			<hr>
 			delete article :
 			<a href="deleteArticle?articleId=${article.id }"><button
 					class="delete_button">delete ${article.title }</button></a>
 			<br>
+			<br>
 			add video :
 			<form action="addVideo" method="post" enctype="multipart/form-data">
-
 				<input type="text" name="articleId" value="${article.id }" hidden><br>
-				<input type="file" name="video"><br> <input
-					type="submit" value="add video in ${article.title }"><br>
+				<input class="content_button" type="file" name="video"><br> 
+				<input class="content_button" type="submit" value="add video in ${article.title }"><br>
 
 			</form>
 			<%-- <a href="addArticleMedia?articleId=${article.id }"><button>delete ${article.title } </button></a> --%>
