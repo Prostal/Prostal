@@ -13,9 +13,7 @@
 <link rel="stylesheet" type="text/css" href="css/main.css" />
 
 <script type="text/javascript">
-	$(document).ready(
-			function() {
-
+	$(document).ready(function() {
 				//jCarousel Plugin
 				$('#carousel').jcarousel({
 					vertical : true,
@@ -91,121 +89,7 @@
 		});
 	}
 </script>
-<style>
 
-
-
-#slideshow-main {
-	width: 429px;
-	float: left;
-	margin-right: 3px;
-}
-
-#slideshow-main ul {
-	margin: 0;
-	padding: 0;
-	width: 429px;
-}
-
-#slideshow-main li {
-	width: 429px;
-	height: 290px;
-	display: none;
-	position: relative;
-}
-
-#slideshow-main li.active {
-	display: block !important;
-}
-
-#slideshow-main li span.opacity {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	display: block;
-	width: 100%;
-	height: 60px;
-	background: #000;
-	filter: alpha(opacity = 50);
-	-moz-opacity: 0.5;
-	-khtml-opacity: 0.5;
-	opacity: 0.5;
-	z-index: 100;
-}
-
-#slideshow-main li span.content {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	display: block;
-	width: 100%;
-	height: 60px;
-	z-index: 100;
-}
-
-#slideshow-main li span.content h1 {
-	font-size: 14px;
-	margin: 5px 0;
-	padding: 0 10px;;
-	color: #fe850c;
-}
-
-#slideshow-main li span.content p {
-	font-size: 11px;
-	margin: 5px 0;
-	padding: 0 10px;;
-	color: #fe850c;
-}
-
-#slideshow-carousel {
-	float: left;
-	width: 206px;
-	position: relative
-}
-
-#slideshow-carousel ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-#slideshow-carousel li {
-	background: #fff;
-	height: 97px;
-	position: relative
-}
-
-#slideshow-carousel li .arrow {
-	left: 3px;
-	top: 28px;
-	position: absolute;
-	width: 20px;
-	height: 40px;
-	background: url(img/arrow_white.png) no-repeat 0 0;
-	display: block;
-}
-
-#slideshow-carousel li a {
-	background: #000;
-	display: block;
-	width: 206px;
-	height: 95px;
-}
-
-#slideshow-carousel .active {
-	filter: alpha(opacity = 100);
-	-moz-opacity: 1.0;
-	-khtml-opacity: 1.0;
-	opacity: 1.0;
-}
-
-#slideshow-carousel .faded {
-	filter: alpha(opacity = 50);
-	-moz-opacity: 0.5;
-	-khtml-opacity: 0.5;
-	opacity: 0.5;
-}
-</style>
 </head>
 <body>
 
@@ -231,9 +115,11 @@
 		
 		</div>
 		
+		<div id="carousel_pos">		
 		<jsp:include page="jcarousel.jsp"></jsp:include>
+		</div>
 	
-	</div>
+		</div>
 
 	<div id="right_body">
 	
@@ -243,12 +129,6 @@
 	</div>
 	
 	
-	
-	
-	
-	
-
-
 	<!-- footer with copy rights and cotacts -->
 	<jsp:include page="footer.jsp"></jsp:include>
 

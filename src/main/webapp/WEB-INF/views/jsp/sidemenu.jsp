@@ -3,8 +3,9 @@
 
 <div id="side_menu">
 
-<c:forEach items="${applicationScope.categories}" var="category">	
-	<a href="categoryArticles?category=${ category.categoryId}"><button class="side_button">${category.name}</button></a>
-		<br>
+<c:forEach items="${applicationScope.categories}" var="category" varStatus="status">	
+	<a href="categoryArticles?category=${category.categoryId}">
+		<button class="side_button">${category.name}</button>
+	</a>
  </c:forEach>
 </div>

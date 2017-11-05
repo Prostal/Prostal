@@ -4,7 +4,7 @@
 <h4 align="center">Copyright © 2017 Prostal Kadets. </h4>
 
 
-<div class="box" align="center">
+<div class="boxButton" align="center">
 	<a class="button" href="#popup1">Contacts</a>
 </div>
 
