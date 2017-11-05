@@ -125,7 +125,7 @@ public class AdminController {
 		}
 		try {
 			String filetype = tika.detect(file.getBytes());
-			System.out.println(filetype);
+			System.out.println("@@@"+filetype);
 			if(!filetype.equals(supportedType)){
 				request.setAttribute("error", "this file format is not supported");
 				ResponseEntity.status(HttpStatus.FORBIDDEN);
@@ -159,7 +159,7 @@ public class AdminController {
 		String original = file.getOriginalFilename();
 		String extension = FilenameUtils.getExtension(original);
 		
-		String supportedType = "video/mp4";
+		String supportedType = "video/quicktime";
 		
 		if(!supportedFormat(supportedType, file, request)){
 			return "user";

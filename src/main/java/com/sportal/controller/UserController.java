@@ -126,6 +126,8 @@ public class UserController {
 				user = userDao.getUser(username);
 				request.getSession().setAttribute("user", user);
 				return "user";
+			}else{
+				return "loginPage";
 			}
 
 		} catch (SQLException e) {
@@ -134,7 +136,6 @@ public class UserController {
 			return "error500";
 		}
 
-		return "index";
 	}
 
 	@RequestMapping(value = "/avatarUpload", method = RequestMethod.POST)
