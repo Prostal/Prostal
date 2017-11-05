@@ -85,10 +85,9 @@ public class ArticleController {
 		long categoryId = Long.parseLong(request.getParameter("category"));
 
 		if (categoryId > 0) {
-			Set<Article> articles;
+			
 			try {
-				articles = articleDao.getArtticlesByCategory(categoryId);
-				request.getSession().setAttribute("articles", articles);
+				request.getSession().setAttribute("articles", articleDao.getArtticlesByCategory(categoryId));
 				request.setAttribute("category", categoryDao.getCategoryById(categoryId));
 
 			} catch (SQLException e) {
@@ -96,6 +95,10 @@ public class ArticleController {
 				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 				return "index500";
 			}
+		}else{
+			request.setAttribute("error", "no such category");
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			return "index";
 		}
 		// reveals submenu with all the subcategories belonging to the category
 		return "categoryArticles";

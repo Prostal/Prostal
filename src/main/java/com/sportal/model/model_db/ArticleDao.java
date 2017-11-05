@@ -88,9 +88,9 @@ public  class ArticleDao extends Dao{
 	
 	//get all artticles by category_id
 	public Set<Article> getArtticlesByCategory(long categoryId) throws SQLException{
-		Set<Article> articles = new HashSet<Article>();
+		Set<Article> articles = new LinkedHashSet<Article>();
 		Connection con  = dbManager.getConnection();
-		String select = "SELECT a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading  FROM  articles as a  WHERE a.category_id=? ";
+		String select = "SELECT a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading  FROM  articles as a  WHERE a.category_id= ? ORDER BY a.datetime desc ";
 		ResultSet rs = null;
 		
 		try(PreparedStatement ps = con.prepareStatement(select)){

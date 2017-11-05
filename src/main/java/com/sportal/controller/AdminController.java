@@ -40,7 +40,8 @@ public class AdminController {
 	@Autowired
 	private MediaDao mediaDao;
 
-	
+	private final static String SUPPORTED_VIDEO_FORMAT = "video/mp4";
+	private final static String SUPPORTED_IMAGE_FORMAT = "image/jpeg";
 
 	@RequestMapping(value = "/postArticle", method = RequestMethod.POST)
 	public String postArticle(@RequestParam("image") MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
@@ -73,10 +74,10 @@ public class AdminController {
 			// publishArticle(article)
 			long articleId = articleDao.addArticle(article);
 			
-			String supportedType = "image/jpeg";
+			
 			String original = file.getOriginalFilename();
 			
-			if(!supportedFormat(supportedType, file, request)){
+			if(!supportedFormat(AdminController.SUPPORTED_IMAGE_FORMAT, file, request)){
 				return "user";
 			}
 			
@@ -153,15 +154,14 @@ public class AdminController {
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 			return "error500";
 		}
-		String title = article.getTitle();
+		
 		
 		String newname = articleId+"articleId"+article.getMediaFiles().size();//next num
 		String original = file.getOriginalFilename();
 		String extension = FilenameUtils.getExtension(original);
 		
-		String supportedType = "video/mp4";
 		
-		if(!supportedFormat(supportedType, file, request)){
+		if(!supportedFormat(AdminController.SUPPORTED_VIDEO_FORMAT, file, request)){
 			return "user";
 		}
 		
@@ -178,16 +178,16 @@ public class AdminController {
 		}
 			
 		// UPDATE IN DB
-		Media media = new Media(title, f.getAbsolutePath(), true);
+		Media media = new Media(newname, f.getAbsolutePath(), true);
 		long mediaId = 0;
 		//TODO REPEATING CODE FIX
 		try {
-			if(mediaDao.getMediaByName(title)==null){
+			if(mediaDao.getMediaByName(newname)==null){
 				mediaId = mediaDao.addMedia(media);
 				mediaDao.addInArticleMedia(articleId, mediaId);
 			}else{
 				//if exists in another article
-				Media exists = mediaDao.getMediaByName(title);
+				Media exists = mediaDao.getMediaByName(newname);
 				mediaId = exists.getMedia_id();
 			}
 			

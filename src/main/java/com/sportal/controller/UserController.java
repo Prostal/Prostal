@@ -127,7 +127,6 @@ public class UserController {
 				request.getSession().setAttribute("user", user);
 				return "user";
 			}else{
-				System.out.println("logout");
 				return "loginPage";
 			}
 
