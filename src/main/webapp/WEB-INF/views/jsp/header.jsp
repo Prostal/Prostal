@@ -13,11 +13,9 @@
 		</c:if>
 		This is the ex-"USER" button. -->
 		<div style="font-size:20px">
-		Welcome, <a
-			href=<c:if test="${ sessionScope.user!=null }">"userPage"
-		</c:if>>
-			<c:out value="${sessionScope.user.username }">Guest</c:out>
-		</a>
+		Welcome, <a href="userPage"><c:out value="${sessionScope.user.username }">Guest</c:out></a>
+		
+		
 		</div>
 
 		<c:if test="${ sessionScope.user==null }">

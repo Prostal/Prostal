@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.sportal.model.Article;
 import com.sportal.model.User;
 import com.sportal.model.model_db.ArticleDao;
+import com.sportal.model.model_db.CategoryDao;
 import com.sportal.model.model_db.UserDao;
 
 @Controller
@@ -32,6 +33,8 @@ public class ArticleController {
 	@Autowired
 	private UserDao userDao;
 
+	@Autowired
+	private CategoryDao categoryDao;
 
 	@RequestMapping(value = "/pickArticle", method = RequestMethod.GET)
 	public String getArticle(ModelMap map ,HttpServletRequest request, HttpServletResponse response) {
@@ -86,6 +89,7 @@ public class ArticleController {
 			try {
 				articles = articleDao.getArtticlesByCategory(categoryId);
 				request.getSession().setAttribute("articles", articles);
+				request.setAttribute("category", categoryDao.getCategoryById(categoryId));
 
 			} catch (SQLException e) {
 				request.setAttribute("error", "DB problem"+e.getMessage());

@@ -70,7 +70,7 @@ public  class CategoryDao extends Dao{
 	}
 	
 	
-	public synchronized Category getCategoryByName(String name) throws SQLException{
+	public  Category getCategoryByName(String name) throws SQLException{
 		Connection con = dbManager.getConnection();
 		PreparedStatement ps = con.prepareStatement("SELECT category_id, name FROM categories c WHERE c.name = ?");
 		ps.setString(1, name);
@@ -79,14 +79,16 @@ public  class CategoryDao extends Dao{
 		return new Category( rs.getLong("category_id"),name);
 	}
 	
-//	public synchronized Category getCategoryById(long category_id) throws SQLException{
-//		
-//		return this.categories.get(category_id);//using cashing
-//	}
-//
-//	public Map<Long, Category> getCategories() {
-//		return Collections.unmodifiableMap(categories);
-//	}
+	public  Category getCategoryById(long categoryId) throws SQLException{
+		Connection con = dbManager.getConnection();
+		PreparedStatement ps = con.prepareStatement("SELECT category_id, name FROM categories c WHERE c.category_id = ?");
+		ps.setLong(1, categoryId);
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		return new Category( categoryId,rs.getString(2));
+	}
+	
+
 	
 	
 }
