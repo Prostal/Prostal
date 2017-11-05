@@ -126,7 +126,7 @@ public class AdminController {
 		}
 		try {
 			String filetype = tika.detect(file.getBytes());
-			System.out.println(filetype);
+			System.out.println("@@@"+filetype);
 			if(!filetype.equals(supportedType)){
 				request.setAttribute("error", "this file format is not supported");
 				ResponseEntity.status(HttpStatus.FORBIDDEN);
