@@ -6,7 +6,7 @@
 <head>
 <link type="text/css" href="css/main.css" rel="stylesheet">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>${ category.categoryId}</title>
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
@@ -27,6 +27,8 @@
 			<br>
 			<span>Създаден на: </span>
 			<c:out value="${article.created }"></c:out>
+			<br>
+			<span> Коментари: </span><c:out value= "${article.commentsCount}"></c:out>
 			<br>
 
 			<c:forEach items="${article.mediaFiles}" var="media">

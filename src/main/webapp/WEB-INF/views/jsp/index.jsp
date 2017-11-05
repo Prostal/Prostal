@@ -225,7 +225,7 @@
 	
 		<div class="menu-section">
 
-		<a href="Top5?sort=impressions"><button class="button_most">НАЙ-ПРЕГЛЕЖДАНИ</button></a> 
+		<a href="Top5?sort=impressions"><button class="button_most">НАЙ-ЧЕТЕНИ</button></a> 
 		<a href="Top5?sort=commented"><button class="button_most">НАЙ-КОМЕНТИРАНИ</button></a>
 		<a href="Top5?sort=leading"><button class="button_most">ВОДЕЩИ</button></a>
 		
