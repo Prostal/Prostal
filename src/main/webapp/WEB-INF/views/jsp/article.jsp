@@ -137,6 +137,7 @@ function dislikeComment(commentId) {
 			<c:out value="${article.created }"></c:out>
 			<span> Брой преглеждания: </span>
 			<c:out value="${article.impressions }"></c:out>
+			<span> Коментари: </span><c:out value= "${article.commentsCount}"></c:out> 
 		</div>
 
 		<br>

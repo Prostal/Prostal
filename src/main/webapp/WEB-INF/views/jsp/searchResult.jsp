@@ -28,7 +28,7 @@
 				<h1><a href="pickArticle?articleId=${article.id}" > ${article.title } </a></h1>
 				<span>Брой преглеждания: </span><c:out value="${article.impressions }"></c:out> <br>
 				<span>Брой преглеждания: </span><c:out value="${article.created }"></c:out> <br>
-
+				<span> Коментари: </span><c:out value= "${article.commentsCount}"></c:out> <br>
 				
 				<c:forEach items="${article.mediaFiles}" var="media">
 					<c:if test="${!media.isVideo }">
