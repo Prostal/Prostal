@@ -9,7 +9,7 @@
 							
 						<c:forEach items="${leading.mediaFiles}" var="media">
 							<c:if test="${!media.isVideo }">
-								<img class="media" src="ShowMedia?mediaId=${media.media_id}"  width="430" height="290">
+								<img class="media" src="ShowMedia?mediaId=${media.media_id}"  width="580" height="326">
 							</c:if>
 						</c:forEach>
 						<span class="opacity"></span>
@@ -30,7 +30,7 @@
 					<a href="pickArticle?articleId=${leading.id}" rel="p${status.index}">
 						<c:forEach items="${leading.mediaFiles}" var="media">
 							<c:if test="${!media.isVideo }">
-								<img class="media" src="ShowMedia?mediaId=${media.media_id}"  width="206" height="95" alt="${leading.title}">
+								<img class="media" src="ShowMedia?mediaId=${media.media_id}"  width="234" height="108" alt="${leading.title}">
 							</c:if>
 						</c:forEach>
 					</a>

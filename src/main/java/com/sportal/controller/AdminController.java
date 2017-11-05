@@ -54,7 +54,7 @@ public class AdminController {
 			return "user";
 		}
 		String textContent = request.getParameter("textContent");
-		if(textContent==null || textContent.trim().isEmpty() || textContent.length()>2000){
+		if(textContent==null || textContent.trim().isEmpty() || textContent.length()>5000){
 			request.setAttribute("error", "Text content does not meet our requirements");
 			ResponseEntity.status(HttpStatus.FORBIDDEN);
 			return "user";
