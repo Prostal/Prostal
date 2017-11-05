@@ -27,7 +27,7 @@ public class CategoryController {
 		String name = request.getParameter("category");
 
 		if ((name == null || name.trim().isEmpty()) || name.length() < 3 || name.length() > 45) {
-			request.setAttribute("error", "Category name does not meet our requirements");
+			request.setAttribute("error", "Category name does not meet our requirements min 3 max 45 symbols ");
 			ResponseEntity.status(HttpStatus.FORBIDDEN);
 			return "user";
 		}

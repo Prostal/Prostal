@@ -11,7 +11,7 @@ public class Media implements Serializable {
 	//public static final String IMAGE_URL = "C:\\uploads\\";
 	private long media_id;
 	@NotNull
-	@Size(min=2, max=45)
+	@Size(min=2, max=200)
 	private String name;//45
 	@NotNull
 	@Size(min=2, max=1024)

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,20 +47,24 @@ public class AdminController {
 		//collect data from request
 	
 		String title = request.getParameter("title");
-		String textContent = request.getParameter("textContent");
-		String leading = request.getParameter("isLeading");
-		boolean isLeading = leading!=null;
-		String category = request.getParameter("category");
-		//TODO VALIDATE ALL
-		if(category==null || category.trim().isEmpty() ){
+		if(title==null || title.trim().isEmpty() || title.length()>200){
+			request.setAttribute("error", "Title does not meet our requirements");
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
 			return "user";
 		}
-		long category_id = Long.parseLong(category);
+		String textContent = request.getParameter("textContent");
+		if(textContent==null || textContent.trim().isEmpty() || textContent.length()>2000){
+			request.setAttribute("error", "Text content does not meet our requirements");
+			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			return "user";
+		}
+		String leading = request.getParameter("isLeading");
+		boolean isLeading = leading!=null;
+		
+		long category_id = Long.parseLong(request.getParameter("category"));
 		
 		Set<Media> mediaFiles = new HashSet<>();
-		
-
-			
+	
 		try {
 			
 			Set<Comment> comments = new HashSet<>();
@@ -67,53 +72,78 @@ public class AdminController {
 			Article article = new Article(title, textContent, category_id, LocalDateTime.now(), 0, isLeading, mediaFiles,comments);
 			// publishArticle(article)
 			long articleId = articleDao.addArticle(article);
+			
+			String supportedType = "image/jpeg";
 			String original = file.getOriginalFilename();
+			
+			if(!supportedFormat(supportedType, file, request)){
+				return "user";
+			}
+			
 			String extension = FilenameUtils.getExtension(original);
 			String url = String.valueOf(articleId).concat(".").concat(extension);
 			File f = new File(WebInitializer.LOCATION + File.separator + url);
 			
-				try {
-					file.transferTo(f);
-					
-				} catch (IllegalStateException | IOException e1) {
-					System.out.println(e1.getMessage());
-					System.out.println("op");
-					return "index";
-				}
+			try {
+				file.transferTo(f);
+			} catch (IllegalStateException | IOException e1) {
+				request.setAttribute("error", "File transfer went wrong");
+				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				return "user";
+			}
 			// UPDATE IN DB
-			System.out.println("url:"+f.getAbsolutePath());
-			Media media = new Media(title, f.getAbsolutePath(), false);//not video
+			
+			Media media = new Media(title, f.getAbsolutePath(), false);//false -> not video
 			mediaFiles.add(media);
 			long mediaId = 0;
 			if(mediaDao.getMediaByName(title)==null){
 				mediaId = mediaDao.addMedia(media);
+				mediaDao.addInArticleMedia(articleId, mediaId);
 			}else{
 				//if exists in another article
 				Media exists = mediaDao.getMediaByName(title);
 				mediaId = exists.getMedia_id();
 			}
-			mediaDao.addInArticleMedia(articleId, mediaId);
-			System.out.println("after media dao");
 			
 		} catch (SQLException e) {
-			System.out.println("postarticle"+e.getMessage());
-//			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
+			request.setAttribute("error", "Media DB problem ");
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return "user";
 		}
+		request.setAttribute("error", title+" added successfully ");
 		return "user";
 		
 	}
 	
-	enum SupportedFormat {MP4, OGG, WEBM};
-	@RequestMapping(value = "/addVideo", method = RequestMethod.POST)
-	public String addArticleMedia(@RequestParam("video") MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
-		//collect data from request
-		//TODO Global Exeption handler
+	private boolean supportedFormat(String supportedType, MultipartFile file, HttpServletRequest request) {
+		Tika tika = new Tika();
+		
 		if(file.getSize()>WebInitializer.MAX_REQUEST_SIZE){
 			request.setAttribute("error", "this file exceeds the max. file size");
 			ResponseEntity.status(HttpStatus.FORBIDDEN);
-			return "user";
+			return false;
 		}
+		try {
+			String filetype = tika.detect(file.getBytes());
+			System.out.println(filetype);
+			if(!filetype.equals(supportedType)){
+				request.setAttribute("error", "this file format is not supported");
+				ResponseEntity.status(HttpStatus.FORBIDDEN);
+				return false;
+			}
+		} catch (IOException e) {
+			request.setAttribute("error", "IO problem"+e.getCause().getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return false;
+		}
+		
+		return true;
+	}
+
+	@RequestMapping(value = "/addVideo", method = RequestMethod.POST)
+	public String addArticleMedia(@RequestParam("video") MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+		//collect data from request
+		
 		long articleId  = Long.parseLong(request.getParameter("articleId"));
 		Article article = null;
 		try {
@@ -129,47 +159,50 @@ public class AdminController {
 		String original = file.getOriginalFilename();
 		String extension = FilenameUtils.getExtension(original);
 		
-		if(!supportedFormat(extension)){
-			request.setAttribute("error", "not supported format "+extension);
-			ResponseEntity.status(HttpStatus.FORBIDDEN);
+		String supportedType = "video/mp4";
+		
+		if(!supportedFormat(supportedType, file, request)){
 			return "user";
 		}
+		
 		String url = newname.concat(".").concat(extension);
 		File f = new File(WebInitializer.LOCATION + File.separator + url);
 		
-			try {
-				file.transferTo(f);
-				
-			} catch (IllegalStateException | IOException e1) {
-				System.out.println("admin"+e1.getMessage());
-				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-				return "error500";
-			}
+		try {
+			file.transferTo(f);
+			
+		} catch (IllegalStateException | IOException e1) {
+			request.setAttribute("error", "IO problem "+e1.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return "index500";
+		}
 			
 		// UPDATE IN DB
-		System.out.println("url:"+f.getAbsolutePath());
 		Media media = new Media(title, f.getAbsolutePath(), true);
-		long mediaId;
+		long mediaId = 0;
+		//TODO REPEATING CODE FIX
 		try {
-			mediaId = mediaDao.addMedia(media);
-			mediaDao.addInArticleMedia(articleId, mediaId);
+			if(mediaDao.getMediaByName(title)==null){
+				mediaId = mediaDao.addMedia(media);
+				mediaDao.addInArticleMedia(articleId, mediaId);
+			}else{
+				//if exists in another article
+				Media exists = mediaDao.getMediaByName(title);
+				mediaId = exists.getMedia_id();
+			}
+			
 		} catch (SQLException e) {
-			System.out.println("admin"+e.getMessage());
+			System.out.println(e.getMessage());
+			request.setAttribute("error", "DB problem "+e.getMessage());
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error500";
+			return "index500";
 		}
+		
+		
 		return "index";
 	}
 	
-	private boolean supportedFormat(String extension) {
-		for (SupportedFormat format : SupportedFormat.values()) {
-			System.out.println(format+" "+extension);
-			if(format.toString().equalsIgnoreCase(extension)){
-				return true;
-			}
-		}
-		return false;
-	}
+
 
 	
 

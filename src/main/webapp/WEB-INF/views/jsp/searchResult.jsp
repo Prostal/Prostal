@@ -12,7 +12,10 @@
 
    <jsp:include page="header.jsp"></jsp:include>
    
-   
+    <c:if test="${ requestScope.error != null }">
+			<h1 style="color: red">${requestScope.error }</h1>
+	</c:if>
+	
 	<nav> <!-- side menu at the left page side --> 
 	<jsp:include page="sidemenu.jsp"></jsp:include> </nav>
 

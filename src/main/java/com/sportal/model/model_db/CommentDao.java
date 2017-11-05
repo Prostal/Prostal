@@ -23,6 +23,9 @@ public  class CommentDao extends Dao{
 	@Autowired
 	private VoteDao voteDao;
 	
+	@Autowired
+	private UserDao userDao;
+	
 
 	public  Comment addComment(Comment comment) throws SQLException{
 		Connection con = dbManager.getConnection();
@@ -108,11 +111,12 @@ public  class CommentDao extends Dao{
     }
     
     public  Set<Comment> getCommentsByArticle(long id) throws SQLException{
-		Set<Comment> comments = new HashSet<Comment>();
+    	HashSet<Comment> comments = new HashSet<Comment>();
 		Connection con = dbManager.getConnection();
 		PreparedStatement ps = con.prepareStatement("SELECT comment_id, user_id, article_id, content, likes, dislikes, date_time, isApproved FROM sportal.comments WHERE article_id=?");
 		ps.setLong(1, id);
 		ResultSet rs = ps.executeQuery();
+		
 		while (rs.next()) {
 			long commentId = rs.getLong(1);
 			long userId = rs.getLong(2);
@@ -122,10 +126,11 @@ public  class CommentDao extends Dao{
 			int dislikes = rs.getInt(6);
 			LocalDateTime timeCreated = rs.getTimestamp(7).toLocalDateTime();
 			boolean isAproved = rs.getBoolean(8);
-			//TODO 
-			Set<User> voters = new HashSet<>();
 			
-			comments.add(new Comment(commentId, userId, articleId, content, likes, dislikes, timeCreated, isAproved, voters));
+			Set<User> voters = userDao.getVoters(commentId);
+			Comment comment = new Comment(commentId, userId, articleId, content, likes, dislikes, timeCreated, isAproved, voters);
+			
+			comments.add(comment);
 		}
 		return comments;
 	}
@@ -146,8 +151,8 @@ public  class CommentDao extends Dao{
 		int dislikes = rs.getInt(6);
 		LocalDateTime timeCreated = rs.getTimestamp(7).toLocalDateTime();
 		boolean isAproved = rs.getBoolean(8);
-		//TODO 
-		Set<User> voters = new HashSet<>();
+		
+		Set<User> voters = userDao.getVoters(commentId);
 		
 		return new Comment(commentId, userId, articleId, content, likes, dislikes, timeCreated, isAproved, voters);
 	}

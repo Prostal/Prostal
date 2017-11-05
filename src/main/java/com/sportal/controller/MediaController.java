@@ -6,11 +6,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 
-
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,25 +34,26 @@ public class MediaController {
 		try {
 			media = mediaDao.getMediaById(mediaId);
 		} catch (SQLException e1) {
-			System.out.println("op "+e1.getMessage());
+			request.setAttribute("error", "SQL problem : " + e1.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		String mediaUrl = media.getUrl();
-		File myFile = new File(mediaUrl);
+		File f = new File(mediaUrl);
+		
 		try {
-			Path path = myFile.toPath();
-			Files.copy(path, response.getOutputStream());
-		} 
-		catch (IOException e) {
-			e.getStackTrace();
-			System.out.println("op "+e.getMessage());
-		}
-		finally{
-			 try {
-				response.getOutputStream().flush();
+
+			Files.copy(f.toPath(), response.getOutputStream());
+			response.getOutputStream().flush();
+		} catch (IOException e) {
+			request.setAttribute("error", "input problem : " + e.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		} finally {
+			try {
 				response.getOutputStream().close();
 			} catch (IOException e) {
-				e.getStackTrace();
-				System.out.println("op "+e.getMessage());
+				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				
 			}
 		}
 	}

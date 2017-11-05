@@ -37,7 +37,7 @@ function postComment() {
 			var cell2 = row2.insertCell(0);
 			var cell3 = row3.insertCell(0);
 			// Add some text to the new cells:
-				//<img  src= showAvatar/userId  width="50" height= auto>;
+
 			cell1.innerHTML = username;
 			cell2.innerHTML = data;
 			cell3.innerHTML = time;
@@ -161,15 +161,8 @@ function dislikeComment(commentId) {
 			</c:if>
 		</c:forEach>
 
-
-
-
-
-
-
 		<hr>
 		<c:if test="${user!=null }">
-
 
 			<label for="editor1">Editor 1:</label>
 			<textarea cols="60" id="editor1" name="editor1" rows="4"></textarea>
@@ -187,8 +180,10 @@ function dislikeComment(commentId) {
 			<c:forEach items="${article.comments}" var="comment">
 				<tr>
 					<td class="avatar-row">
+					<h2>${commentators[comment.userId] }</h2>
 						<img class="avatar-image" src="showAvatar/${comment.userId}"  width="50" height= auto>
 					</td>
+					
 				</tr>
 				<tr class="comment-row">
 					<td>${comment.content }</td>

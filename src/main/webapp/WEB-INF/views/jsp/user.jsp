@@ -22,7 +22,7 @@
 		<c:if test="${user.avatarUrl!=null }">
 			<img id="avatar" src="showAvatar/${user.id}"  width="50" height= auto>
 			<form action="avatarUpload" method="post" enctype="multipart/form-data">
-				<input type="file" name="avatar"><br>
+				<input type="file" name="avatar" accept=".png, .jpg, .jpeg"><br>
 				<input type="submit" value="change avatar"><br>
 			</form>
 		</c:if>
@@ -30,7 +30,7 @@
 		<c:if test="${user.avatarUrl==null }">
 		<!-- update session -->
 			<form action="avatarUpload" method="post" enctype="multipart/form-data">
-				Avatar<input type="file" name="avatar"><br>
+				Avatar<input type="file" name="avatar" accept=".png, .jpg, .jpeg"><br>
 				<input type="submit" value="upload"><br>
 			</form>
 		</c:if>

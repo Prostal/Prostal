@@ -16,10 +16,10 @@ public class Article implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private long id;
 	@NotNull
-	@Size(min=2, max=200)
+	@Size(min=1, max=200)
 	private String title;
 	@NotNull
-	@Size(min=2, max=2000)
+	@Size(min=1, max=2000)
 	private String textContent;
 	@NotNull
 	private long category_id; 

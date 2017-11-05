@@ -56,7 +56,7 @@ public  class MediaDao extends Dao{
 //		return this.media.containsKey(media_id);
 //	}
 	
-	public synchronized Media getMediaByName(String name) throws SQLException{
+	public  Media getMediaByName(String name) throws SQLException{
 		Connection con = dbManager.getConnection();
 		PreparedStatement ps = con.prepareStatement("SELECT media_id, name, content_url, isVideo FROM media m WHERE m.name = ?");
 		ps.setString(1, name);

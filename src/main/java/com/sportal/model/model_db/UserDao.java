@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -188,13 +190,69 @@ public  class UserDao extends Dao{
 		}
 	}
 
-	public boolean checkEmail(String email) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public Set<User> getCommentators(long articleId) throws SQLException {
+		Set<User> commentators = new HashSet<>();
+		String commentator = "SELECT u.user_id, u.email, u.password, u.username, u.age, u.avatar_url, u.isAdmin, u.isBanned, u.date_time_registered from users u JOIN comments c ON c.user_id = u.user_id WHERE c.article_id = ?";
+		Connection con = dbManager.getConnection();
+		ResultSet rs=null;
+		
+		try(PreparedStatement ps = con.prepareStatement(commentator)) {
+			ps.setLong(1, articleId);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				commentators.add(new User(
+									rs.getLong("u.user_id"),
+									rs.getString("u.username"),
+									rs.getString("u.password"),
+									rs.getString("u.email"),
+									rs.getString("u.avatar_url"),
+									rs.getInt("u.age"),
+									rs.getTimestamp("u.date_time_registered").toLocalDateTime(),
+									rs.getBoolean("isBanned"),
+									rs.getBoolean("isAdmin")));
+			}
+			
+			
+		} 
+		finally {
+			if (rs != null) {
+				rs.close();
+			}
+		}
+		return commentators;
 	}
-
-	public boolean checkUsername(String username) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	
+	public Set<User> getVoters(long commentId) throws SQLException {
+		Set<User> voteUsers = new HashSet<>();
+		String voters = "SELECT u.user_id, u.email, u.password, u.username, u.age, u.avatar_url, u.isAdmin, u.isBanned, u.date_time_registered  from users u join votes v  on u.user_id = v.users_user_id join comments c on c.comment_id = v.comments_comment_id group by c.comment_id =?";
+		Connection con = dbManager.getConnection();
+		ResultSet rs=null;
+		
+		try(PreparedStatement ps = con.prepareStatement(voters)) {
+			ps.setLong(1, commentId);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				voteUsers.add(new User(
+									rs.getLong("u.user_id"),
+									rs.getString("u.username"),
+									rs.getString("u.password"),
+									rs.getString("u.email"),
+									rs.getString("u.avatar_url"),
+									rs.getInt("u.age"),
+									rs.getTimestamp("u.date_time_registered").toLocalDateTime(),
+									rs.getBoolean("isBanned"),
+									rs.getBoolean("isAdmin")));
+			}
+			
+			
+		} 
+		finally {
+			if (rs != null) {
+				rs.close();
+			}
+		}
+		return voteUsers;
 	}
 }

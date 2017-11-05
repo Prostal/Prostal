@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.SQLException;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -112,15 +112,6 @@ public class UserController {
 		}
 	}
 
-	private boolean validPassword(String password) {
-
-		return password != null && !password.trim().isEmpty() && password.length() < 201;
-	}
-
-	private boolean validUsername(String username) {
-		return username != null && !username.trim().isEmpty() && username.length() < 46;
-	}
-
 	@RequestMapping(value = "/userPage", method = RequestMethod.GET)
 	public String getUser(HttpServletRequest request, HttpServletResponse response) {
 
@@ -140,7 +131,7 @@ public class UserController {
 		} catch (SQLException e) {
 			request.setAttribute("error", "database problem : " + e.getMessage());
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
+			return "error500";
 		}
 
 		return "index";
@@ -152,19 +143,37 @@ public class UserController {
 
 		User user = (User) req.getSession().getAttribute("user");
 		if (user == null) {
+			req.setAttribute("error", "Log in first ");
+			ResponseEntity.status(HttpStatus.UNAUTHORIZED);
 			return "index";
 		}
-		String username = user.getUsername();
 
+		String supportedType = "image/jpeg";
 		String original = file.getOriginalFilename();
-		String extension = FilenameUtils.getExtension(original);// nice, a
-		String avatar = username.concat(".").concat(extension);
+		Tika tika = new Tika();
+		try {
+			String filetype = tika.detect(file.getBytes());
+
+			if (!filetype.equals(supportedType)) {
+				req.setAttribute("error", "this file format is not supported");
+				ResponseEntity.status(HttpStatus.FORBIDDEN);
+				return "user";
+			}
+		} catch (IOException e) {
+			req.setAttribute("error", "IO problem" + e.getCause().getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return "user";
+		}
+		String extension = FilenameUtils.getExtension(original);
+
+		String avatar = user.getId() + "user".concat(".").concat(extension);
 		File f = new File(WebInitializer.LOCATION + File.separator + avatar);
 		try {
 			file.transferTo(f);
 		} catch (IllegalStateException | IOException e1) {
+			req.setAttribute("error", "IO problem : " + e1.getMessage());
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
+			return "error500";
 		}
 		// UPDATE IN DB
 		try {
@@ -173,34 +182,10 @@ public class UserController {
 		} catch (SQLException e) {
 			req.setAttribute("error", "database problem : " + e.getMessage());
 			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
+			return "error500";
 		}
 
 		return "index";
-	}
-
-	@RequestMapping(value = "/getAvatar", method = RequestMethod.GET)
-	public String displayAvatar(HttpServletRequest request, HttpServletResponse response) {
-		User user = (User) request.getSession().getAttribute("user");
-		String avatar = user.getAvatarUrl();
-
-		if (avatar == null) {
-			avatar = "default.jpg";
-		}
-		File f = new File(WebInitializer.LOCATION + File.separator + avatar);
-
-		try (ServletOutputStream out = response.getOutputStream()) {
-
-			Files.copy(f.toPath(), out);
-			out.flush();
-			out.close();
-		} catch (IOException e) {
-			request.setAttribute("error", "input problem : " + e.getMessage());
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-			return "error";
-		}
-
-		return "user";
 	}
 
 	@RequestMapping(value = "/showAvatar/{userId}", method = RequestMethod.GET)
@@ -239,6 +224,15 @@ public class UserController {
 			}
 		}
 
+	}
+
+	private boolean validPassword(String password) {
+
+		return password != null && !password.trim().isEmpty() && password.length() < 201;
+	}
+
+	private boolean validUsername(String username) {
+		return username != null && !username.trim().isEmpty() && username.length() < 46;
 	}
 
 	private boolean isValidEmailAddress(String email) {

@@ -1,6 +1,7 @@
 package com.sportal.controller;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -12,24 +13,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sportal.model.Article;
+import com.sportal.model.User;
 import com.sportal.model.model_db.ArticleDao;
+import com.sportal.model.model_db.UserDao;
 
 @Controller
 public class ArticleController {
 
 	@Autowired
 	private ArticleDao articleDao;
+	
+	@Autowired
+	private UserDao userDao;
 
-	private enum Sort {
-		IMMPRESSIONS, COMMENTED, LEADING
-	};
 
 	@RequestMapping(value = "/pickArticle", method = RequestMethod.GET)
-	public String getArticle(HttpServletRequest request, HttpServletResponse response) {
+	public String getArticle(ModelMap map ,HttpServletRequest request, HttpServletResponse response) {
 		// review article content and all the media related to the article
 
 		long articleId = Long.parseLong(request.getParameter("articleId"));
@@ -37,13 +41,21 @@ public class ArticleController {
 		Article article = null;
 		try {
 			article = articleDao.getArtticleById(articleId);
-
+			Set<User> commentators = userDao.getCommentators(articleId);
+			HashMap<Long, String> mapp = new HashMap<>();
+			for (User user : commentators) {
+				mapp.put(user.getId(), user.getUsername());
+				
+			}
+			map.addAttribute("commentators", mapp);
 			// increment immpressions
 			articleDao.incremenImpression(articleId);
 		} catch (SQLException e) {
-			System.out.println("op" + e.getMessage());
+			request.setAttribute("error", "DB problem "+e.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return "index500";
 		}
-		// TODO THINK ABOUT SCOPE AGAIN
+		
 		request.getSession().setAttribute("article", article);
 		return "article";
 		
@@ -56,8 +68,9 @@ public class ArticleController {
 		try {
 			articleDao.removeArticle(articleId);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			request.setAttribute("error", "DB problem"+e.getMessage());
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return "index500";
 		}
 		return "index";
 	}
@@ -74,7 +87,9 @@ public class ArticleController {
 				request.getSession().setAttribute("articles", articles);
 
 			} catch (SQLException e) {
-				System.out.println("op" + e.getMessage());
+				request.setAttribute("error", "DB problem"+e.getMessage());
+				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				return "index500";
 			}
 		}
 		// reveals submenu with all the subcategories belonging to the category
@@ -109,8 +124,11 @@ public class ArticleController {
 			}
 		} catch (SQLException e) {
 			request.setAttribute("error", "Ops it is not you");
-			ResponseEntity.status(HttpStatus.FORBIDDEN);
+			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
 			return "error500";
+		}
+		if(result.isEmpty()){
+			request.setAttribute("error", "no matches were found for the specified query:  "+search);
 		}
 		
 		request.getSession().setAttribute("search", result);
@@ -131,7 +149,9 @@ public class ArticleController {
 				request.getSession().setAttribute("articles", articles);
 
 			} catch (SQLException e) {
-				System.out.println("op");
+				request.setAttribute("error", "DB problem"+e.getMessage());
+				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				return "index500";
 			}
 			break;
 		case "leading":
@@ -141,16 +161,19 @@ public class ArticleController {
 				request.getSession().setAttribute("articles", articles);
 
 			} catch (SQLException e) {
-				System.out.println("op");
+				request.setAttribute("error", "DB problem"+e.getMessage());
+				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				return "index500";
 			}
 			break;
 		case "commented":
 			try {
 				articles.addAll(articleDao.getTop5ByComments());
 				request.getSession().setAttribute("articles", articles);
-				System.out.println(articles.size());
 			} catch (SQLException e) {
-				System.out.println("op");
+				request.setAttribute("error", "DB problem"+e.getMessage());
+				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				return "index500";
 			}
 			break;
 

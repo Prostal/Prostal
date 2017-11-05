@@ -1,6 +1,6 @@
 package com.sportal.model;
 
-import java.io.Serializable;
+
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.AssertFalse;
@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 public class User{
 
 	
-	public static final String AVATAR_URL = "C:\\uploads\\";
+	//public static final String AVATAR_URL = "C:\\uploads\\";
 	private long id;
 	
 	@NotNull
