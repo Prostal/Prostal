@@ -101,6 +101,9 @@ public class Article implements Serializable{
 		return sortedByTime;
 	}
 
+	public long getCommentsCount(){
+		return this.comments.size();
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

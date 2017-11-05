@@ -3,6 +3,7 @@ package com.sportal.controller;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -140,13 +141,10 @@ public class ArticleController {
 		// list top 5 articles on selected condition
 		String sort = request.getParameter("sort");
 
-		Set<Article> articles = new TreeSet<Article>((o1, o2) -> (int) (o2.getImpressions() - o1.getImpressions()));
-
 		switch (sort) {
 		case "impressions":
 			try {
-				articles.addAll(articleDao.getTop5ByImpressions());
-				request.getSession().setAttribute("articles", articles);
+				request.setAttribute("articles", articleDao.getTop5ByImpressions());
 
 			} catch (SQLException e) {
 				request.setAttribute("error", "DB problem"+e.getMessage());
@@ -156,9 +154,8 @@ public class ArticleController {
 			break;
 		case "leading":
 			try {
-				articles.addAll(articleDao.getTop5Leading());
-				// filter leading by period here if ypu want
-				request.getSession().setAttribute("articles", articles);
+				
+				request.setAttribute("articles", articleDao.getTop5Leading());
 
 			} catch (SQLException e) {
 				request.setAttribute("error", "DB problem"+e.getMessage());
@@ -168,8 +165,8 @@ public class ArticleController {
 			break;
 		case "commented":
 			try {
-				articles.addAll(articleDao.getTop5ByComments());
-				request.getSession().setAttribute("articles", articles);
+				
+				request.setAttribute("articles", articleDao.getTop5ByComments());
 			} catch (SQLException e) {
 				request.setAttribute("error", "DB problem"+e.getMessage());
 				ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);

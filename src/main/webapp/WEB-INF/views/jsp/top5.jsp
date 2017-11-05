@@ -22,11 +22,11 @@
 		
 		<a class="link_most" href="Top5?sort=impressions"><button class="button_most">НАЙ-ПРЕГЛЕЖДАНИ</button></a> 
 		
-		<a class="link_most" href="Top5?sort=comments"><button class="button_most">НАЙ-КОМЕНТИРАНИ</button></a> 
+		<a class="link_most" href="Top5?sort=commented"><button class="button_most">НАЙ-КОМЕНТИРАНИ</button></a> 
 				
-		<a class="link_most" href="Top5?sort=impressions"><button class="button_most">ВОДЕЩИ</button></a>
+		<a class="link_most" href="Top5?sort=leading"><button class="button_most">ВОДЕЩИ</button></a>
 		
-		<c:forEach items="${ sessionScope.articles }" var="article">
+		<c:forEach items="${ requestScope.articles }" var="article">
 			<h2><a href="pickArticle?articleId=${article.id}" >${article.title }</a>
 			
 			</h2>
@@ -34,7 +34,7 @@
 				<!--<c:out value="${article.textContent }"></c:out> <br>-->
 				Преглеждания: <c:out value="${article.impressions }"></c:out> <br>
 				Създаден на: <c:out value="${article.created }"></c:out> <br>
-				
+				Коментари: <c:out value= "${article.commentsCount}"></c:out> <br>
 				<c:forEach items="${article.mediaFiles}" var="media">
 				<a href="pickArticle?articleId=${article.id}" ><img id="media" src="ShowMedia?mediaId=${media.media_id}" alt=""
 						style="width: 150px; height: auto; border: 0;"></a>

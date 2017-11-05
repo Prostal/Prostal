@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -197,7 +197,7 @@ public  class ArticleDao extends Dao{
 		}
 		
 		public Set<Article> getTop5ByImpressions() throws SQLException{
-			Set<Article> articles = new HashSet<Article>();
+			Set<Article> articles = new LinkedHashSet<Article>();
 			Connection con  = dbManager.getConnection();
 			ResultSet rs = null;
 			String select = "SELECT a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading  FROM  articles as a  order by a.impressions desc limit 5";
@@ -230,9 +230,7 @@ public  class ArticleDao extends Dao{
 		}
 		
 		public Set<Article> getTop5Leading() throws SQLException{
-			Set<Article> articles = new TreeSet<Article>(( o1, o2) ->
-			
-					o2.getCreated().compareTo(o1.getCreated()));
+			Set<Article> articles = new LinkedHashSet<>();
 			
 			Connection con  = dbManager.getConnection();
 			ResultSet rs = null;
@@ -266,17 +264,17 @@ public  class ArticleDao extends Dao{
 		}
 		
 		public Set<Article> getTop5ByComments() throws SQLException{
-			Set<Article> articles = new HashSet<Article>();
+			Set<Article> articles = new LinkedHashSet<Article>();
 			Connection con  = dbManager.getConnection();
 			ResultSet rs = null;
-			String selectMostCommented = "SELECT  a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading, count(c.comment_id) as comments FROM articles AS a JOIN comments c ON a.article_id = c.article_id GROUP BY a.article_id limit 5";
+			String selectMostCommented = "SELECT a.article_id, a.category_id, a.title, a.content, a.datetime, a.impressions, a.isLeading, count(c.comment_id) as comments FROM articles AS a JOIN comments c ON a.article_id = c.article_id GROUP BY a.article_id order by comments desc limit 5";
 			try(PreparedStatement ps = con.prepareStatement(selectMostCommented)){
 				rs = ps.executeQuery();
 				while (rs.next()) {
-					
 					long articleId = rs.getLong(1);
 					long categoryId = rs.getLong(2);
 					String title = rs.getString(3);
+					System.out.println(title);
 					String textContent = rs.getString(4);
 					LocalDateTime created = rs.getTimestamp(5).toLocalDateTime();
 					long impressions = rs.getInt(6);
