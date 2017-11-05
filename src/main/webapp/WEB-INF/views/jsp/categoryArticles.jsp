@@ -6,7 +6,9 @@
 <head>
 <link type="text/css" href="css/main.css" rel="stylesheet">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>${ category.categoryId}</title>
+
+<title>${category.name }</title>
+
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>

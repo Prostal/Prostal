@@ -127,6 +127,10 @@ public class UserController {
 				request.getSession().setAttribute("user", user);
 				return "user";
 			}else{
+<<<<<<< HEAD
+=======
+				System.out.println("logout");
+>>>>>>> 110e8e471eb8de2862bd4e6bef6b9b82fe6c77cf
 				return "loginPage";
 			}
 
