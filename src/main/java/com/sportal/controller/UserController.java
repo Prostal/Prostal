@@ -47,7 +47,7 @@ public class UserController {
 				User user = userDao.getUser(username);
 				// update session
 				request.getSession().setAttribute("user", user);
-				return "index";
+				return "redirect:index";
 			} else {
 
 				request.setAttribute("error", "user does not exist");
@@ -70,7 +70,7 @@ public class UserController {
 			// redirect to main page OR PREVIOUS??
 
 		}
-		return "index";
+		return "redirect:index";
 	}
 
 	// Spring form used

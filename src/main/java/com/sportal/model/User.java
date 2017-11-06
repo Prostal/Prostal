@@ -1,6 +1,5 @@
 package com.sportal.model;
 
-
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.AssertFalse;
@@ -8,21 +7,19 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+public class User {
 
-public class User{
-
-	
-	//public static final String AVATAR_URL = "C:\\uploads\\";
+	// public static final String AVATAR_URL = "C:\\uploads\\";
 	private long id;
-	
+
 	@NotNull
-    @Size(min=1, max=45)
+	@Size(min = 1, max = 45)
 	private String username;
 	@NotNull
-	@Size(min=1, max=200)
+	@Size(min = 1, max = 200)
 	private String password;
 	@NotNull
-	@Size(min=2, max=45)
+	@Size(min = 2, max = 45)
 	@Pattern(regexp = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$")
 	private String email;
 	private int age;
@@ -33,7 +30,8 @@ public class User{
 	private LocalDateTime registered;
 	private String avatarUrl;
 
-	public User(long id, String username, String password, String email, String avatarUrl, int age, LocalDateTime registered, boolean isBanned, boolean isAdmin) {
+	public User(long id, String username, String password, String email, String avatarUrl, int age,
+			LocalDateTime registered, boolean isBanned, boolean isAdmin) {
 		this(username, password, email);
 		this.id = id;
 		this.avatarUrl = avatarUrl;
@@ -42,7 +40,7 @@ public class User{
 		this.isAdmin = isAdmin;
 		this.isBanned = isBanned;
 	}
-	
+
 	public User(String username, String password, String email) {
 		this.username = username;
 		this.password = password;
@@ -51,7 +49,6 @@ public class User{
 		this.isAdmin = false;
 		this.isBanned = false;
 	}
-	
 
 	public User() {
 		this.registered = LocalDateTime.now();
@@ -72,7 +69,7 @@ public class User{
 	public String getEmail() {
 		return email;
 	}
-	
+
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -92,8 +89,6 @@ public class User{
 	public LocalDateTime getRegistered() {
 		return registered;
 	}
-
-	
 
 	public String getAvatarUrl() {
 		return avatarUrl;
@@ -143,7 +138,4 @@ public class User{
 		return true;
 	}
 
-
-	
-	
 }

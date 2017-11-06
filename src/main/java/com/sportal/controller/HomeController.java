@@ -31,7 +31,7 @@ public class HomeController {
 
 	@RequestMapping(value = "/index", method=RequestMethod.GET )
 	public String start(HttpSession session, HttpServletRequest request, HttpServletResponse response){
-		System.out.println("OOOOP");
+		System.out.println("START");
 		Set<Category> categories = new TreeSet<Category>((o1, o2) -> 
 			o1.getName().compareToIgnoreCase(o2.getName()));
 		

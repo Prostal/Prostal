@@ -8,9 +8,8 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class Comment implements Serializable{
-	
-	
+public class Comment implements Serializable {
+
 	private static final long serialVersionUID = -2083047749077809648L;
 	private long commentId;
 	@NotNull
@@ -18,18 +17,17 @@ public class Comment implements Serializable{
 	@NotNull
 	private long articleId;
 	@NotNull
-	@Size(min=2, max=200)
+	@Size(min = 2, max = 200)
 	private String content;
 	private int likes;
 	private int dislikes;
 	private LocalDateTime timeCreated;
 	private boolean isAproved;
 	private Set<User> voters;
-	
 
-	public Comment(long commentId, long userId, long articleId, String content, int likes, int dislikes, LocalDateTime timeCreated,
-			boolean isAproved, Set<User> voters) {
-		this(userId, articleId, content, likes, dislikes, timeCreated, isAproved, voters );
+	public Comment(long commentId, long userId, long articleId, String content, int likes, int dislikes,
+			LocalDateTime timeCreated, boolean isAproved, Set<User> voters) {
+		this(userId, articleId, content, likes, dislikes, timeCreated, isAproved, voters);
 		this.commentId = commentId;
 	}
 
@@ -46,15 +44,13 @@ public class Comment implements Serializable{
 		this.voters = voters;
 	}
 
-	public boolean canVote(User user){
+	public boolean canVote(User user) {
 		return !this.voters.contains(user);
 	}
-	
-	public Set<User> getVoters(){
+
+	public Set<User> getVoters() {
 		return Collections.unmodifiableSet(this.voters);
 	}
-	
-	
 
 	public long getCommentId() {
 		return commentId;
@@ -91,8 +87,6 @@ public class Comment implements Serializable{
 	public void setId(long id) {
 		this.commentId = id;
 	}
-	
-	
 
 	@Override
 	public int hashCode() {
@@ -118,8 +112,5 @@ public class Comment implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
-	
-	
+
 }

@@ -18,74 +18,112 @@ public  class CategoryDao extends Dao{
 
 
 	public void addCategory(Category category) throws SQLException{
-		String name = category.getName();
-		if(name==null || name.trim().isEmpty()){
-			return;
-		}
-		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("INSERT INTO categories (name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
 		
-		ps.setString(1, name);
-		ps.executeUpdate();
-		ResultSet rs = ps.getGeneratedKeys();
-		rs.next();
-		long id = rs.getLong(1);
-		category.setCategoryId(id);
-		//categories.put(id, category);
+		Connection con = dbManager.getConnection();
+		String insert = "INSERT INTO categories (name) VALUES (?)";
+		ResultSet rs = null;
+		try(PreparedStatement ps = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS)){
+			ps.setString(1, category.getName());
+			ps.executeUpdate();
+			rs = ps.getGeneratedKeys();
+			rs.next();
+			long id = rs.getLong(1);
+			category.setCategoryId(id);
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+		}
+		
+		
+		
 	}
 	
 	public boolean existsCategory(String name) throws SQLException{
 
 		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT count(*) as count FROM categories c WHERE c.name = ?");
-		ps.setString(1, name);
-		ResultSet rs = ps.executeQuery();
-		rs.next();
-	
-		return rs.getInt("count")>0;
+		ResultSet rs = null;
+		String select = "SELECT count(*) AS count FROM categories c WHERE c.name = ?";
+		try(PreparedStatement ps = con.prepareStatement(select)){
+			ps.setString(1, name);
+			rs = ps.executeQuery();
+			rs.next();
+			return rs.getInt("count")>0;
+		}finally {
+			if (rs != null) {
+				rs.close();
+			}
+		}
+		
+		
 	}
 	
 	public Set<Category> getAllCategories() throws SQLException{
 		
 		Set<Category> categories = new HashSet<>();
 		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT c.category_id , c.name FROM categories c ");
-		ResultSet rs = ps.executeQuery();
-		
-		while (rs.next()) {
-			categories.add(new Category(rs.getLong(1), rs.getString(2)));
-			
+		ResultSet rs = null;
+		String select = "SELECT c.category_id , c.name FROM categories c ";
+		try(PreparedStatement ps = con.prepareStatement(select)){
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				categories.add(new Category(rs.getLong(1), rs.getString(2)));
+			}
+			return categories;
+		}finally {
+			if (rs != null) {
+				rs.close();
+			}
 		}
-		return categories;
+		
+		
 	}
 	
-	public boolean removeCategory(long category_id) throws SQLException{
+	public void removeCategory(long category_id) throws SQLException{
 		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("DELETE FROM categories c WHERE c.category_id = ?", Statement.RETURN_GENERATED_KEYS);
-		ps.setLong(1, category_id);
-		ps.executeUpdate();
-		ResultSet rs = ps.getGeneratedKeys();
-		//this.categories.remove(category_id);
-		return rs.next();
+		String delete = "DELETE FROM categories c WHERE c.category_id = ?";
+		
+		try(PreparedStatement ps = con.prepareStatement(delete)){
+			ps.setLong(1, category_id);
+			ps.executeUpdate();
+			
+		}catch (SQLException e) {
+			throw e;
+		}
+		
 	}
 	
 	
 	public  Category getCategoryByName(String name) throws SQLException{
 		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT category_id, name FROM categories c WHERE c.name = ?");
-		ps.setString(1, name);
-		ResultSet rs = ps.executeQuery();
-		rs.next();
-		return new Category( rs.getLong("category_id"),name);
+		ResultSet rs = null;
+		String select = "SELECT category_id, name FROM categories c WHERE c.name = ?";
+		try(PreparedStatement ps = con.prepareStatement(select)){
+			ps.setString(1, name);
+			rs = ps.executeQuery();
+			rs.next();
+			return new Category( rs.getLong("category_id"),name);
+		}finally {
+			if (rs != null) {
+				rs.close();
+			}
+		}
 	}
 	
 	public  Category getCategoryById(long categoryId) throws SQLException{
 		Connection con = dbManager.getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT category_id, name FROM categories c WHERE c.category_id = ?");
-		ps.setLong(1, categoryId);
-		ResultSet rs = ps.executeQuery();
-		rs.next();
-		return new Category( categoryId,rs.getString(2));
+		ResultSet rs = null;
+		String select = "SELECT category_id, name FROM categories c WHERE c.category_id = ?";
+		try(PreparedStatement ps = con.prepareStatement(select)){
+			ps.setLong(1, categoryId);
+			rs = ps.executeQuery();
+			rs.next();
+			return new Category( categoryId,rs.getString(2));
+		}finally {
+			if (rs != null) {
+				rs.close();
+			}
+		}
 	}
 	
 

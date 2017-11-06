@@ -3,20 +3,18 @@ package com.sportal.model;
 import javax.validation.constraints.NotNull;
 
 public class Vote {
-	
-	
+
 	private long voteId;
 	@NotNull
 	private long commentId;
 	@NotNull
 	private long userId;
-	
-	
+
 	public Vote(long voteId, long commentId, long userId) {
 		this(commentId, userId);
 		this.voteId = voteId;
 	}
-	
+
 	public Vote(long commentId, long userId) {
 		this.commentId = commentId;
 		this.userId = userId;
@@ -38,6 +36,4 @@ public class Vote {
 		this.voteId = voteId;
 	}
 
-	
-	
 }

@@ -6,32 +6,28 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class Media implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	//public static final String IMAGE_URL = "C:\\uploads\\";
+	// public static final String IMAGE_URL = "C:\\uploads\\";
 	private long media_id;
 	@NotNull
-	@Size(min=2, max=200)
-	private String name;//45
+	@Size(min = 2, max = 200)
+	private String name;// 45
 	@NotNull
-	@Size(min=2, max=1024)
-	private String url;//1024
+	@Size(min = 2, max = 1024)
+	private String url;// 1024
 	private boolean isVideo;
-	
+
 	public Media(long media_id, String name, String url, boolean isVideo) {
-		this(name,url, isVideo);
+		this(name, url, isVideo);
 		this.media_id = media_id;
 	}
-	
-	
 
 	public Media(String name, String url, boolean isVideo) {
 		this.name = name;
 		this.url = url;
-		this.isVideo= isVideo;
+		this.isVideo = isVideo;
 	}
-
-
 
 	public void setId(long media_id) {
 		this.media_id = media_id;
@@ -52,8 +48,6 @@ public class Media implements Serializable {
 	public String getUrl() {
 		return url;
 	}
-
-
 
 	@Override
 	public int hashCode() {
@@ -85,7 +79,5 @@ public class Media implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
 
 }
