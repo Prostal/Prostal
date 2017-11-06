@@ -77,12 +77,9 @@ public class Comment implements Serializable {
 		return dislikes;
 	}
 
-	public String getTimeCreated() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-		LocalDateTime localDate = LocalDateTime.parse(timeCreated.toString(), formatter);
-
-		return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDate);
+	public LocalDateTime getTimeCreated() {
+		
+		return timeCreated;
 	}
 
 	public boolean isAproved() {
