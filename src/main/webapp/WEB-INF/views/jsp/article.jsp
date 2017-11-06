@@ -18,6 +18,8 @@ function postComment() {
 	var data = CKEDITOR.instances.editor1.getData();
 	var comment = "comment="+data;
 	request.onreadystatechange = function() {
+		CKEDITOR.instances.editor1.setData('');
+		
 		//when response is received
 		if (this.readyState == 4 && this.status == 200) {
 			//reset comments input field???
@@ -46,6 +48,8 @@ function postComment() {
 			cell3.innerHTML = time;
 			//cell4.innerHTML =<img src="showAvatar/${userId}"  width="50" height= auto>;
 			//append first child to table of comments with the value
+			
+			
 		}
 		else
 		if (this.readyState == 4 && this.status == 401) {

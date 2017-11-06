@@ -61,7 +61,7 @@ public class Article implements Serializable {
 	}
 
 	public LocalDateTime getCreated() {
-		
+
 		return created;
 	}
 
