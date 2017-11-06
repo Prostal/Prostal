@@ -22,9 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sportal.WebInitializer;
 import com.sportal.model.Article;
+import com.sportal.model.Category;
 import com.sportal.model.Comment;
 import com.sportal.model.Media;
+import com.sportal.model.User;
 import com.sportal.model.model_db.ArticleDao;
+import com.sportal.model.model_db.CategoryDao;
 import com.sportal.model.model_db.MediaDao;
 
 @Controller
@@ -32,18 +35,28 @@ import com.sportal.model.model_db.MediaDao;
 public class AdminController {
 
 	@Autowired
+	private CategoryDao categoryDao;
+	@Autowired
 	private ArticleDao articleDao;
 	@Autowired
 	private MediaDao mediaDao;
 
 	private final static String SUPPORTED_VIDEO_FORMAT = "video/mp4";
 	private final static String SUPPORTED_IMAGE_FORMAT = "image/jpeg";
+	
 
 	@RequestMapping(value = "/postArticle", method = RequestMethod.POST)
 	public String postArticle(@RequestParam("image") MultipartFile file, HttpServletRequest request,
 			HttpServletResponse response) {
+		
+		//credential verification
+		if(!isAuthorized(request)){
+			response.setStatus(401);
+			request.setAttribute("error", "you are not authorized");
+			return "redirect:index";
+		}
+		
 		// collect data from request
-
 		String title = request.getParameter("title");
 		if (title == null || title.trim().isEmpty() || title.length() > 200) {
 			request.setAttribute("error", "Title does not meet our requirements");
@@ -112,36 +125,75 @@ public class AdminController {
 		return "user";
 
 	}
-
-	private boolean supportedFormat(String supportedType, MultipartFile file, HttpServletRequest request, HttpServletResponse res) {
-		Tika tika = new Tika();
-
-		if (file.getSize() > WebInitializer.MAX_REQUEST_SIZE) {
-			request.setAttribute("error", "this file exceeds the max. file size");
-			res.setStatus(403);
-			return false;
+	
+	@RequestMapping(value = "/deleteArticle", method = RequestMethod.GET)
+	public String deleteArticle(HttpServletRequest request, HttpServletResponse response) {
+		
+		//credential verification
+		if(!isAuthorized(request)){
+			response.setStatus(401);
+			request.setAttribute("error", "you are not authorized");
+			return "redirect:index";
 		}
+		
+		long articleId = Long.parseLong(request.getParameter("articleId"));
 		try {
-			String filetype = tika.detect(file.getBytes());
-			if (!filetype.equals(supportedType)) {
-				request.setAttribute("error", "this file format is not supported");
-				res.setStatus(403);
-				return false;
-			}
-		} catch (IOException e) {
-			request.setAttribute("error", "IO problem" + e.getCause().getMessage());
-			res.setStatus(500);
-			return false;
+			articleDao.removeArticle(articleId);
+		} catch (SQLException e) {
+			request.setAttribute("error", "DB problem" + e.getMessage());
+			response.setStatus(500);
+			return "index500";
+		}
+		return "user";
+	}
+	
+	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
+	public String addCategory(HttpServletRequest request, HttpServletResponse response) {
+
+		//credential verification
+		if(!isAuthorized(request)){
+			response.setStatus(401);
+			request.setAttribute("error", "you are not authorized");
+			return "redirect:index";
+		}
+		
+		String name = request.getParameter("category");
+
+		if ((name == null || name.trim().isEmpty()) || name.length() < 3 || name.length() > 45) {
+			request.setAttribute("error", "Category name does not meet our requirements min 3 max 45 symbols ");
+			response.setStatus(403);
+			return "user";
 		}
 
-		return true;
+		try {
+			if (!categoryDao.existsCategory(name)) {
+				categoryDao.addCategory(new Category(name));
+				request.setAttribute("error", "Category " + name + " has been created");
+			} else {
+				request.setAttribute("error", "Category name already exists");
+				response.setStatus(403);
+				return "user";
+			}
+		} catch (SQLException e) {
+			request.setAttribute("error", "Category problem " + e.getMessage());
+			response.setStatus(500);
+			return "error500";
+		}
+		return "user";
 	}
 
 	@RequestMapping(value = "/addVideo", method = RequestMethod.POST)
 	public String addArticleMedia(@RequestParam("video") MultipartFile file, HttpServletRequest request,
 			HttpServletResponse response) {
+		
+		//credential verification
+		if(!isAuthorized(request)){
+			response.setStatus(401);
+			request.setAttribute("error", "you are not authorized");
+			return "redirect:index";
+		}
+		
 		// collect data from request
-
 		long articleId = Long.parseLong(request.getParameter("articleId"));
 		Article article = null;
 		try {
@@ -194,5 +246,33 @@ public class AdminController {
 
 		return "index";
 	}
+	
+	private boolean isAuthorized(HttpServletRequest request){
+		User user = (User) request.getSession().getAttribute("user");
+		return user.isAdmin();
+	}
 
+	private boolean supportedFormat(String supportedType, MultipartFile file, HttpServletRequest request, HttpServletResponse res) {
+		Tika tika = new Tika();
+
+		if (file.getSize() > WebInitializer.MAX_REQUEST_SIZE) {
+			request.setAttribute("error", "this file exceeds the max. file size");
+			res.setStatus(403);
+			return false;
+		}
+		try {
+			String filetype = tika.detect(file.getBytes());
+			if (!filetype.equals(supportedType)) {
+				request.setAttribute("error", "this file format is not supported");
+				res.setStatus(403);
+				return false;
+			}
+		} catch (IOException e) {
+			request.setAttribute("error", "IO problem" + e.getCause().getMessage());
+			res.setStatus(500);
+			return false;
+		}
+
+		return true;
+	}
 }

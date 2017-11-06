@@ -61,18 +61,6 @@ public class ArticleController {
 
 	}
 
-	@RequestMapping(value = "/deleteArticle", method = RequestMethod.GET)
-	public String deleteArticle(HttpServletRequest request, HttpServletResponse response) {
-		long articleId = Long.parseLong(request.getParameter("articleId"));
-		try {
-			articleDao.removeArticle(articleId);
-		} catch (SQLException e) {
-			request.setAttribute("error", "DB problem" + e.getMessage());
-			response.setStatus(500);
-			return "index500";
-		}
-		return "user";
-	}
 
 	@RequestMapping(value = "/categoryArticles", method = RequestMethod.GET)
 	public String pickCategory(HttpServletRequest request, HttpServletResponse response) {

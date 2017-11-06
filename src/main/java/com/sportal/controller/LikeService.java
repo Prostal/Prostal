@@ -66,7 +66,6 @@ public class LikeService {
 			return;
 		}
 		
-		resp.setStatus(200);
 		JSONObject jObj = new JSONObject();
 		jObj.put("likesCount", likesCount);
 		jObj.put("commentId", commentId);
@@ -86,6 +85,7 @@ public class LikeService {
 				return;
 			}
 		}
+		resp.setStatus(200);
 	}
 	
 	@RequestMapping(value="/dislike", method=RequestMethod.POST)
@@ -123,7 +123,6 @@ public class LikeService {
 			return;
 		}
 		
-		resp.setStatus(200);
 		JSONObject jObj = new JSONObject();
 		jObj.put("dislikesCount", dislikesCount);
 		jObj.put("commentId", commentId);
@@ -144,6 +143,7 @@ public class LikeService {
 				return;
 			}
 		}
+		resp.setStatus(200);
 	}
 
 }

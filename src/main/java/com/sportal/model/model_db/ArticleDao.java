@@ -36,7 +36,7 @@ public class ArticleDao extends Dao {
 			ps.setLong(1, article.getCategory_id());
 			ps.setString(2, article.getTitle());
 			ps.setString(3, article.getTextContent());
-			ps.setTimestamp(4, Timestamp.valueOf(article.getCreated()));// https://www.youtube.com/watch?v=CEjU9KVABao
+			ps.setTimestamp(4, Timestamp.valueOf(article.getCreated()));
 			ps.setLong(5, article.getImpressions());
 			ps.setBoolean(6, article.isLeading());
 			ps.executeUpdate();
