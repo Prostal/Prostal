@@ -2,6 +2,7 @@ package com.sportal.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
@@ -60,8 +61,12 @@ public class Article implements Serializable {
 		return textContent;
 	}
 
-	public LocalDateTime getCreated() {
-		return created;
+	public String getCreated() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+		LocalDateTime localDate = LocalDateTime.parse(created.toString(), formatter);
+
+		return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDate);
 	}
 
 	public long getImpressions() {
